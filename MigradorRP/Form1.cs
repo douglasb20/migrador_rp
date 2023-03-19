@@ -9,6 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Configuration;
+using System.Reflection;
+using System.IO;
 
 namespace MigradorRP
 {
@@ -19,6 +22,12 @@ namespace MigradorRP
             InitializeComponent();
             this.Paint += new PaintEventHandler(frmMain1_Paint);
         }
+
+        public static string caminho                    = Path.GetDirectoryName(Application.ExecutablePath);
+        public static string fileConfig                 = "config.conf";
+        public static string pathConfig                 = Path.Combine( caminho , fileConfig);
+        public static Dictionary<string, string> config;
+        public string titulo = ConfigurationManager.AppSettings["appTitle"];
 
         private void frmMain1_Paint(object sender, PaintEventArgs e)
         {
@@ -64,7 +73,19 @@ namespace MigradorRP
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
+            try
+            {
+                ConfigReader.SetFilePath(pathConfig);
+                config = ConfigReader.config();
 
+                lblTopBar.Text = titulo.ToString() + " | MigradorRP" ;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, titulo, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
         }
 
         public void moverForm()

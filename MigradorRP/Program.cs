@@ -16,7 +16,6 @@ namespace MigradorRP
         {
             try
             {
-                
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new frmMain());

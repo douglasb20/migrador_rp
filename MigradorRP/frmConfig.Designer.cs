@@ -148,8 +148,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cboEntrada);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmConfig";
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.frmConfig_Load);
             this.ResumeLayout(false);

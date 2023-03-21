@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Data.OleDb;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Configuration;
-using System.Reflection;
-using System.Data.Odbc;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
 
 namespace MigradorRP
 {
@@ -21,16 +16,16 @@ namespace MigradorRP
     {
         public frmMain()
         {
-            InitializeComponent();
-
-            this.Paint += new PaintEventHandler(Element_Paint);
-
             try
             {
-                ConfigReader.SetFilePath(pathConfig);
-                config = ConfigReader.config();
+                InitializeComponent();
+                this.Paint += new PaintEventHandler(Element_Paint);
+
+                ConfigReader.LoadConfig(pathConfig);
 
                 lblTopBar.Text = titulo.ToString() + " | MigradorRP";
+
+                tmrBorda.Tick += new EventHandler(DesignAndActions.timer1_Tick);
 
             }
             catch (Exception ex)
@@ -40,13 +35,15 @@ namespace MigradorRP
             }
         }
 
+
         public static Dictionary<string, string> config;
+
         public Button activeButton;
         public static string caminho                    = Path.GetDirectoryName(Application.ExecutablePath);
         public static string fileConfig                 = "config.conf";
         public static string pathConfig                 = Path.Combine( caminho , fileConfig);
         public string titulo                            = ConfigurationManager.AppSettings["appTitle"];
-        public static string testeTxt                   = "";
+
 
         private void Element_Paint(object sender, PaintEventArgs e)
         {
@@ -63,6 +60,7 @@ namespace MigradorRP
             forma.CloseFigure();
             this.Region = new Region(forma);
         }
+
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
@@ -96,6 +94,24 @@ namespace MigradorRP
             string textFilter = "Arquivos Excel | *.xls; *.xlsx";
             string titleDialog = "Selecione uma planilha para importar no sistema";
 
+            ToolTip toolBtValidate = new ToolTip();
+            toolBtValidate.SetToolTip(btnValidateFiles, "Validar planilhas");
+            toolBtValidate.SetToolTip(btnCancelFiles, "Remover planilhas");
+            toolBtValidate.SetToolTip(btnSetSystem, "Configurações do migrador");
+            toolBtValidate.SetToolTip(BtnFileProd, "Escolha uma planilha de produtos");
+            toolBtValidate.SetToolTip(btnFileClient, "Escolha uma planilha de clientes");
+            toolBtValidate.SetToolTip(btnFileFornecedor, "Escolha uma planilha de fornecedores");
+            toolBtValidate.InitialDelay = 250;
+            
+            lblTabClient.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
+            lblTabClient.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+
+            lblTabProd.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
+            lblTabProd.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+
+            lblTabForn.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
+            lblTabForn.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+
             fileDialogProd.Filter = textFilter;
             fileDialogProd.Title = titleDialog;
 
@@ -110,8 +126,10 @@ namespace MigradorRP
             frmConfig.Pai = this;
             frmConfig.canCloseApp = true;
             frmConfig.ShowDialog();
-            this.Visible = false;
+            this.Hide();
+
             tmrBorda.Interval = 1;
+
         }
 
         public void moverForm()
@@ -130,16 +148,6 @@ namespace MigradorRP
             this.WindowState = FormWindowState.Minimized;
         }
 
-        private void lblMin_MouseEnter(object sender, EventArgs e)
-        {
-            lblMin.BackColor = Color.FromArgb(54,54,54);
-        }
-
-        private void lblMin_MouseLeave(object sender, EventArgs e)
-        {
-            lblMin.BackColor = Color.Transparent;
-        }
-
         private void lblClose_MouseEnter(object sender, EventArgs e)
         {
             lblClose.BackColor = Color.FromArgb(188, 75, 81);
@@ -155,57 +163,20 @@ namespace MigradorRP
             moverForm();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void btnSetSystem_Click(object sender, EventArgs e)
-        {
-            tmrBorda.Enabled = true;
-            //(new frmConfig()).ShowDialog();
-        }
-
-        public void ReceiverData(string dados)
-        {
-            txtCaminho.Text = dados;
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            int toPosition = activeButton.Left - pnlBorda.Left;
-            bool type = toPosition > 0 ? true : false;
-
-            if (toPosition != 0)
-            {
-                if (type)
-                {
-                    pnlBorda.Left += 15;
-                }
-                else
-                {
-                    pnlBorda.Left -= 15;
-                }
-            }
-            else
-            {
-                tmrBorda.Stop();
-            }
-        }
-
         private void BtnFileProd_Click(object sender, EventArgs e)
         {
-            if(fileDialogProd.ShowDialog() == DialogResult.OK)
+            Button btn = (Button)sender;
+
+            if (fileDialogProd.ShowDialog() == DialogResult.OK)
             {
-                BtnFileProd.Text = fileDialogProd.SafeFileName;
+                btn.Text = fileDialogProd.SafeFileName;
             }
             else
             {
-                BtnFileProd.Text = "Produtos...";
+                btn.Text = "Produtos...";
                 fileDialogProd.FileName = "";
             }
-            activeButton = BtnFileProd;
-            tmrBorda.Enabled = true;
+            
         }
 
         private void btnFileClient_Click(object sender, EventArgs e)
@@ -219,8 +190,8 @@ namespace MigradorRP
                 btnFileClient.Text          = "Clientes...";
                 fileDialogClient.FileName   = "";
             }
-            activeButton = btnFileClient;
-            tmrBorda.Enabled = true;
+            //activeButton = btnFileClient;
+            //tmrBorda.Enabled = true;
         }
 
         private void btnFileFornecedor_Click(object sender, EventArgs e)
@@ -234,25 +205,26 @@ namespace MigradorRP
                 btnFileFornecedor.Text = "Fornecedores...";
                 fileDialogForn.FileName = "";
             }
-            activeButton = btnFileFornecedor;
-            tmrBorda.Enabled = true;
+            //activeButton = btnFileFornecedor;
+            //tmrBorda.Enabled = true;
         }
 
         private void btnCancelFiles_Click(object sender, EventArgs e)
         {
+            
             try
             {
 
                 BtnFileProd.Enabled = true;
-                BtnFileProd.Text = "Produtos...";
+                BtnFileProd.Text = "Produtos";
                 fileDialogProd.FileName = "";
 
                 btnFileClient.Enabled = true;
-                btnFileClient.Text = "Clientes...";
+                btnFileClient.Text = "Clientes";
                 fileDialogClient.FileName = "";
 
                 btnFileFornecedor.Enabled = true;
-                btnFileFornecedor.Text = "Fornecedores...";
+                btnFileFornecedor.Text = "Fornecedores";
                 fileDialogForn.FileName = "";
             }catch(Exception error) {
                 Util.ErrorMessage(error.Message);
@@ -277,7 +249,7 @@ namespace MigradorRP
                 OleDbConnection con = new OleDbConnection(abrir);
                 con.Open();
                 DataTable dt = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-                int i = 0;
+
 
                 MessageBox.Show(dt.Rows[0]["TABLE_NAME"].ToString());
 
@@ -288,12 +260,45 @@ namespace MigradorRP
                 //}
 
                 con.Close();
+                DesignAndActions.ActiveTab(lblTabProd, tmrBorda);
             }
             catch(Exception err)
             {
                 Util.ErrorMessage(err.Message);
             }
             
+        }
+
+        private void lblTabProd_Click(object sender, EventArgs e)
+        {
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
+        }
+
+        private void lblTabClient_Click(object sender, EventArgs e)
+        {
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
+        }
+
+        private void lblTabForn_Click(object sender, EventArgs e)
+        {
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
+        }
+
+        private void btNeutro_Click(object sender, EventArgs e)
+        {
+            Button eu = (Button)sender;
+
+            eu.Text = ConfigReader.GetConfigValue("host");
+        }
+
+        private void btnMin_MouseEnter(object sender, EventArgs e)
+        {
+            btnMin.BackColor = Color.FromArgb(54, 54, 54);
+        }
+
+        private void btnMin_MouseLeave(object sender, EventArgs e)
+        {
+            btnMin.BackColor = Color.Transparent;
         }
     }
 }

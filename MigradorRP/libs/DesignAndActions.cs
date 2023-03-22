@@ -45,7 +45,7 @@ namespace MigradorRP
 
         public static void timer1_Tick(object sender, EventArgs e)
         {
-            Panel pnlBorda = Application.OpenForms["frmMain"].Controls["panel1"].Controls["pnlBorda"] as Panel;
+            Panel pnlBorda = Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["pnlBorda"] as Panel;
             int toPosition = lblActivated.Left - pnlBorda.Left;
             bool type = toPosition > 0 ? true : false;
             Timer tmr = (Timer)sender;
@@ -70,9 +70,9 @@ namespace MigradorRP
         public static void DesactiveTabs()
         {
 
-            Label l1 = (Label)Application.OpenForms["frmMain"].Controls["panel1"].Controls["lblTabProd"];
-            Label l2 = (Label)Application.OpenForms["frmMain"].Controls["panel1"].Controls["lblTabClient"];
-            Label l3 = (Label)Application.OpenForms["frmMain"].Controls["panel1"].Controls["lblTabForn"];
+            Label l1 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabProd"];
+            Label l2 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabClient"];
+            Label l3 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabForn"];
 
             l1.BackColor = Color.Transparent;
             l1.ForeColor = Color.White;

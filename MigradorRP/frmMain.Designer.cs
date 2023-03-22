@@ -47,10 +47,12 @@
             this.btnCancelFiles = new FontAwesome.Sharp.IconButton();
             this.lblTabProd = new System.Windows.Forms.Label();
             this.lblTabClient = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnlDadosImp = new System.Windows.Forms.Panel();
             this.btnMin = new FontAwesome.Sharp.IconButton();
             this.btnSetSystem = new FontAwesome.Sharp.IconButton();
-            this.panel1.SuspendLayout();
+            this.dtGridProdutos = new System.Windows.Forms.DataGridView();
+            this.pnlDadosImp.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dtGridProdutos)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTopBar
@@ -115,7 +117,6 @@
             this.btNeutro.TabIndex = 10;
             this.btNeutro.Text = "button1";
             this.btNeutro.UseVisualStyleBackColor = false;
-            this.btNeutro.Visible = false;
             this.btNeutro.Click += new System.EventHandler(this.btNeutro_Click);
             // 
             // BtnFileProd
@@ -185,7 +186,7 @@
             this.btnFileFornecedor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(80)))), ((int)(((byte)(110)))));
             this.btnFileFornecedor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(110)))), ((int)(((byte)(155)))));
             this.btnFileFornecedor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFileFornecedor.Font = new System.Drawing.Font("Poppins", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFileFornecedor.Font = new System.Drawing.Font("Poppins", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFileFornecedor.ForeColor = System.Drawing.Color.White;
             this.btnFileFornecedor.IconChar = FontAwesome.Sharp.IconChar.FileArrowUp;
             this.btnFileFornecedor.IconColor = System.Drawing.Color.White;
@@ -214,7 +215,7 @@
             // pnlBorda
             // 
             this.pnlBorda.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(206)))), ((int)(((byte)(247)))), ((int)(((byte)(160)))));
-            this.pnlBorda.Location = new System.Drawing.Point(10, 44);
+            this.pnlBorda.Location = new System.Drawing.Point(10, 41);
             this.pnlBorda.Name = "pnlBorda";
             this.pnlBorda.Size = new System.Drawing.Size(150, 3);
             this.pnlBorda.TabIndex = 16;
@@ -234,6 +235,7 @@
             this.btnCancelFiles.Location = new System.Drawing.Point(616, 50);
             this.btnCancelFiles.Margin = new System.Windows.Forms.Padding(0);
             this.btnCancelFiles.Name = "btnCancelFiles";
+            this.btnCancelFiles.Padding = new System.Windows.Forms.Padding(2, 2, 0, 0);
             this.btnCancelFiles.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.btnCancelFiles.Size = new System.Drawing.Size(40, 40);
             this.btnCancelFiles.TabIndex = 17;
@@ -268,16 +270,18 @@
             this.lblTabClient.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblTabClient.Click += new System.EventHandler(this.lblTabClient_Click);
             // 
-            // panel1
+            // pnlDadosImp
             // 
-            this.panel1.Controls.Add(this.lblTabProd);
-            this.panel1.Controls.Add(this.lblTabClient);
-            this.panel1.Controls.Add(this.lblTabForn);
-            this.panel1.Controls.Add(this.pnlBorda);
-            this.panel1.Location = new System.Drawing.Point(0, 102);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(932, 593);
-            this.panel1.TabIndex = 20;
+            this.pnlDadosImp.Controls.Add(this.dtGridProdutos);
+            this.pnlDadosImp.Controls.Add(this.lblTabProd);
+            this.pnlDadosImp.Controls.Add(this.lblTabClient);
+            this.pnlDadosImp.Controls.Add(this.lblTabForn);
+            this.pnlDadosImp.Controls.Add(this.pnlBorda);
+            this.pnlDadosImp.Location = new System.Drawing.Point(0, 102);
+            this.pnlDadosImp.Name = "pnlDadosImp";
+            this.pnlDadosImp.Size = new System.Drawing.Size(975, 593);
+            this.pnlDadosImp.TabIndex = 20;
+            this.pnlDadosImp.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlDadosImp_Paint);
             // 
             // btnMin
             // 
@@ -316,6 +320,22 @@
             this.btnSetSystem.TabIndex = 22;
             this.btnSetSystem.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSetSystem.UseVisualStyleBackColor = false;
+            this.btnSetSystem.Click += new System.EventHandler(this.btnSetSystem_Click);
+            // 
+            // dtGridProdutos
+            // 
+            this.dtGridProdutos.AllowUserToAddRows = false;
+            this.dtGridProdutos.AllowUserToDeleteRows = false;
+            this.dtGridProdutos.AllowUserToResizeRows = false;
+            this.dtGridProdutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dtGridProdutos.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dtGridProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dtGridProdutos.Location = new System.Drawing.Point(0, 71);
+            this.dtGridProdutos.MultiSelect = false;
+            this.dtGridProdutos.Name = "dtGridProdutos";
+            this.dtGridProdutos.ReadOnly = true;
+            this.dtGridProdutos.Size = new System.Drawing.Size(975, 522);
+            this.dtGridProdutos.TabIndex = 20;
             // 
             // frmMain
             // 
@@ -325,7 +345,7 @@
             this.ClientSize = new System.Drawing.Size(975, 700);
             this.Controls.Add(this.btnSetSystem);
             this.Controls.Add(this.btnMin);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlDadosImp);
             this.Controls.Add(this.btnCancelFiles);
             this.Controls.Add(this.btnFileFornecedor);
             this.Controls.Add(this.btnFileClient);
@@ -341,7 +361,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Automatec Sistemas | MigradorRP";
             this.Load += new System.EventHandler(this.frmMain_Load);
-            this.panel1.ResumeLayout(false);
+            this.pnlDadosImp.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dtGridProdutos)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -360,7 +381,7 @@
         private System.Windows.Forms.OpenFileDialog fileDialogClient;
         private System.Windows.Forms.OpenFileDialog fileDialogForn;
         private System.Windows.Forms.Panel pnlBorda;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pnlDadosImp;
         private System.Windows.Forms.Label lblTabForn;
         private System.Windows.Forms.Label lblTabProd;
         private System.Windows.Forms.Label lblTabClient;
@@ -368,6 +389,7 @@
         private FontAwesome.Sharp.IconButton btnMin;
         private FontAwesome.Sharp.IconButton btnCancelFiles;
         private FontAwesome.Sharp.IconButton btnSetSystem;
+        private System.Windows.Forms.DataGridView dtGridProdutos;
     }
 }
 

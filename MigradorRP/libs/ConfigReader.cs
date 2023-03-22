@@ -7,6 +7,9 @@ namespace MigradorRP
     public static class ConfigReader
     {
         private static ConfigParser config;
+        private static string filePath;
+        public static string sistema = null;
+        public static string tipoImportacao = null;
 
         public static void LoadConfig(string fileName)
         {
@@ -19,12 +22,17 @@ namespace MigradorRP
                 }
 
                 config = new ConfigParser(fileName);
-
+                filePath = fileName;
             }
             catch (Exception error)
             {
                 throw error;
             }
+        }
+
+        public static void ReloadConfig()
+        {
+            config = new ConfigParser(filePath);
         }
 
         public static void SaveConfig()

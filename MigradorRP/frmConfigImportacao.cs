@@ -39,9 +39,20 @@ namespace MigradorRP
                 this.Size = new Size(this.Size.Width, 200);
                 pnlConfigOptions.Visible = false;
             }
-            cfgImpQtd.Checked= ConfigReader.GetConfigValue("importa_quantidade") == "true";
+            ConfigReader.ReloadConfig();
 
-            if(ConfigReader.tipoImportacao == null)
+
+            cfgImpQtd.Checked               = ConfigReader.GetConfigValue("Produtos", "importa_quantidade") == "true";
+            cfgzProdZerosEsquerda.Checked   = ConfigReader.GetConfigValue("Produtos","prod_remover_zeros_esquerda") == "true";
+            cfgCalcMargem.Checked           = ConfigReader.GetConfigValue("Produtos", "calcular_margem") == "true";
+            cfgAjustaPis.Checked            = ConfigReader.GetConfigValue("Produtos", "ajusta_pis_csosn") == "true";
+            cfgAjustaCofins.Checked         = ConfigReader.GetConfigValue("Produtos", "ajusta_cofins_csosn") == "true";
+
+            cfgCliZeroEsquerda.Checked      = ConfigReader.GetConfigValue("Clientes", "cli_remover_zeros_esquerda") == "true";
+
+            cfgFornZeroEsquerda.Checked     = ConfigReader.GetConfigValue("Fornecedores", "forn_remover_zeros_esquerda") == "true";
+
+            if (ConfigReader.tipoImportacao == null)
             {
                 cboEntrada.SelectedIndex= 0;
                 cboSistema.SelectedIndex = 0;
@@ -54,7 +65,7 @@ namespace MigradorRP
 
 
             btnCancelCLose.Location = new Point(3, this.Size.Height - btnCancelCLose.Size.Height -5);
-            btSaveConfig.Location = new Point(this.Size.Width - btSaveConfig.Size.Width - 5, this.Size.Height - btSaveConfig.Size.Height -5);
+            btSaveConfig.Location   = new Point(this.Size.Width - btSaveConfig.Size.Width - 5, this.Size.Height - btSaveConfig.Size.Height -5);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -62,11 +73,6 @@ namespace MigradorRP
             CloseConfig();
         }
 
-        private void cfgImpQtd_Change(object sender, EventArgs e)
-        {
-            CheckBox chk = (CheckBox)sender;
-            ConfigReader.SetConfigValue("importa_quantidade", chk.Checked ? "true": "false");
-        }
 
         public void CloseConfig()
         {
@@ -87,8 +93,6 @@ namespace MigradorRP
 
         private void btSaveConfig_Click(object sender, EventArgs e)
         {
-            
-
             if(confirmaAlterarModo)
             {
                 if(MessageBox.Show("Deseja alterar a configuração de " + string.Join( " e ", alterados) + "?", pai.titulo, MessageBoxButtons.YesNo,MessageBoxIcon.Question) != DialogResult.Yes)
@@ -162,9 +166,50 @@ namespace MigradorRP
             }
         }
 
-        private void pnlConfigOptions_Paint(object sender, PaintEventArgs e)
+        private void changeConfig(CheckBox chk,string section,  string config)
         {
+            ConfigReader.SetConfigValue(section, config, chk.Checked ? "true" : "false");
+        }
 
+        private void cfgzProdZerosEsquerda_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig( chk, "Produtos", "prod_remover_zeros_esquerda");
+        }
+
+        private void cfgImpQtd_Change(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "importa_quantidade");
+        }
+
+        private void cfgCalcMargem_CheckStateChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void cfgCliZeroEsquerda_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Clientes", "cli_remover_zeros_esquerda");
+        }
+
+        private void cfgFornZeroEsquerda_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Fornecedores", "forn_remover_zeros_esquerda");
+        }
+
+        private void cfgAjustaPis_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "ajusta_pis_csosn");
+        }
+
+        private void cfgAjustaCofins_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "ajusta_cofins_csosn");
         }
     }
 }

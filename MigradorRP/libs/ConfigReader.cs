@@ -40,14 +40,14 @@ namespace MigradorRP
             config.Save();
         }
 
-        public static void SetConfigValue(string key, string value)
+        public static void SetConfigValue(string section, string key, string value)
         {
-            config.SetValue("Config", key, value);
+            config.SetValue(section, key, value);
         }
 
-        public static string GetConfigValue(string key)
+        public static string GetConfigValue(string section, string key)
         {
-            String value = config.GetValue("Config", key);
+            String value = config.GetValue(section, key);
             return value;
         }
 

@@ -290,7 +290,7 @@ namespace MigradorRP
 
 
                 string planilha = dt.Rows[0]["TABLE_NAME"].ToString();
-                OleDbDataAdapter da = new OleDbDataAdapter("SELECT * FROM [" + planilha + "] WHERE proatinat=TRUE;", con);
+                OleDbDataAdapter da = new OleDbDataAdapter("SELECT * FROM [" + planilha + "] ;", con);
                 DataTable produtos = new DataTable();
                 da.Fill(produtos);
 
@@ -333,7 +333,7 @@ namespace MigradorRP
         {
             try
             {
-                DefaultModel sql = new DefaultModel();
+                DefaultModel sql = new FornecedorDAO();
                 //DataRowCollection result =  sql.getAll("materiais", "1=1 and mat_001=800 limit 1");
 
                 List<Dictionary<string, dynamic>> bindMaterial = new List<Dictionary<string, dynamic>>();
@@ -357,7 +357,7 @@ namespace MigradorRP
 
                 bindMaterial.Add(nomes);
 
-                string teste = sql.prepareInsertMultiplo(bindMaterial, "materiais");
+                string teste = sql.PrepareUpdate(nomes);
 
                 MessageBox.Show(teste);
 

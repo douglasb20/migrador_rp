@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblTopBar = new System.Windows.Forms.Label();
             this.lblClose = new System.Windows.Forms.Label();
@@ -48,9 +49,9 @@
             this.lblTabProd = new System.Windows.Forms.Label();
             this.lblTabClient = new System.Windows.Forms.Label();
             this.pnlDadosImp = new System.Windows.Forms.Panel();
+            this.dtGridProdutos = new System.Windows.Forms.DataGridView();
             this.btnMin = new FontAwesome.Sharp.IconButton();
             this.btnSetSystem = new FontAwesome.Sharp.IconButton();
-            this.dtGridProdutos = new System.Windows.Forms.DataGridView();
             this.pnlDadosImp.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridProdutos)).BeginInit();
             this.SuspendLayout();
@@ -283,6 +284,36 @@
             this.pnlDadosImp.TabIndex = 20;
             this.pnlDadosImp.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlDadosImp_Paint);
             // 
+            // dtGridProdutos
+            // 
+            this.dtGridProdutos.AllowUserToAddRows = false;
+            this.dtGridProdutos.AllowUserToDeleteRows = false;
+            this.dtGridProdutos.AllowUserToResizeRows = false;
+            this.dtGridProdutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dtGridProdutos.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dtGridProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(5);
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dtGridProdutos.DefaultCellStyle = dataGridViewCellStyle1;
+            this.dtGridProdutos.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dtGridProdutos.GridColor = System.Drawing.SystemColors.ActiveCaption;
+            this.dtGridProdutos.Location = new System.Drawing.Point(0, 71);
+            this.dtGridProdutos.MultiSelect = false;
+            this.dtGridProdutos.Name = "dtGridProdutos";
+            this.dtGridProdutos.ReadOnly = true;
+            this.dtGridProdutos.RowHeadersVisible = false;
+            this.dtGridProdutos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dtGridProdutos.ShowEditingIcon = false;
+            this.dtGridProdutos.ShowRowErrors = false;
+            this.dtGridProdutos.Size = new System.Drawing.Size(975, 522);
+            this.dtGridProdutos.TabIndex = 20;
+            // 
             // btnMin
             // 
             this.btnMin.BackColor = System.Drawing.Color.Transparent;
@@ -321,21 +352,6 @@
             this.btnSetSystem.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.btnSetSystem.UseVisualStyleBackColor = false;
             this.btnSetSystem.Click += new System.EventHandler(this.btnSetSystem_Click);
-            // 
-            // dtGridProdutos
-            // 
-            this.dtGridProdutos.AllowUserToAddRows = false;
-            this.dtGridProdutos.AllowUserToDeleteRows = false;
-            this.dtGridProdutos.AllowUserToResizeRows = false;
-            this.dtGridProdutos.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dtGridProdutos.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dtGridProdutos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dtGridProdutos.Location = new System.Drawing.Point(0, 71);
-            this.dtGridProdutos.MultiSelect = false;
-            this.dtGridProdutos.Name = "dtGridProdutos";
-            this.dtGridProdutos.ReadOnly = true;
-            this.dtGridProdutos.Size = new System.Drawing.Size(975, 522);
-            this.dtGridProdutos.TabIndex = 20;
             // 
             // frmMain
             // 

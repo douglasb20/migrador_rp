@@ -4,18 +4,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace MigradorRP.libs
 {
-    internal class DefaultModel
+    internal class DefaultModelPG
     {
-        private NpgsqlConnection con;
+        public NpgsqlConnection con;
         public string tabela;
+        private DataTable queryData;
+        private NpgsqlTransaction transaction;
 
-        public DefaultModel() { 
+        public DefaultModelPG() { 
             Connect();
         }
 
@@ -28,9 +27,11 @@ namespace MigradorRP.libs
                 string dbuser   = ConfigReader.GetConfigValue("PgDatabase","pgdbuser");
                 string porta    = ConfigReader.GetConfigValue("PgDatabase","pgdbport");
                 string password = ConfigReader.GetConfigValue("PgDatabase", "pgdbpwd");
+                
 
                 con = new NpgsqlConnection("Server=" + host + ";Port=" + porta + ";User Id=" + dbuser + ";Password=" + password + ";Database=" + dbBase + ";");
                 con.Open();
+
                 TiraAcentoBD(con);
 
             }catch(NpgsqlException e)
@@ -97,7 +98,7 @@ namespace MigradorRP.libs
             }
         }
         
-        public DataRowCollection GetAll(string where = "") {
+        public DefaultModelPG GetQuery(string where = "", string order = "") {
             try
             {
                 string query = string.Format("SELECT * FROM {0} ", tabela);
@@ -106,9 +107,16 @@ namespace MigradorRP.libs
                     
                     query = string.Concat(query, string.Format(" WHERE {0}", where));
                 }
-                DataTable result = ExecuteQuery(query);
-                DataRowCollection dados = result.Rows;
-                return dados;
+
+                if (!string.IsNullOrEmpty(order))
+                {
+
+                    query = string.Concat(query, string.Format(" ORDER BY {0}", order));
+                }
+
+                queryData = ExecuteQuery(query);
+                
+                return this;
             }
             catch (NpgsqlException e)
             {
@@ -120,7 +128,17 @@ namespace MigradorRP.libs
             }
         }
 
-        public void InsertMultiplos(List<Dictionary<string,dynamic>> parametros)
+        public DataRowCollection ReadAsCollection()
+        {
+            return queryData.Rows;
+        }
+
+        public DataTable ReadAsDataTable()
+        {
+            return queryData;
+        }
+
+        private void InsertMultiplos(List<Dictionary<string,dynamic>> parametros)
         {
             try
             {
@@ -139,10 +157,9 @@ namespace MigradorRP.libs
         {
             try
             {
-                //string query = PrepareInsert(parametros, tabela);
-                //return ExecuteNonQuery(query);
+                string query = PrepareInsert(parametros);
+                return ExecuteNonQuery(query);
 
-                return 0;
             }
             catch (NpgsqlException e)
             {
@@ -152,6 +169,17 @@ namespace MigradorRP.libs
             {
                 throw e;
             }
+        }
+
+        public void Update(Dictionary<string, dynamic> parametros, string where = "")
+        {
+            if (string.IsNullOrEmpty(where))
+            {
+                throw new Exception("UPDATE sem WHERE no banco de dados");
+            }
+
+            string query = PrepareUpdate(parametros, where);
+            ExecuteNonQuery(query);
         }
 
         public Dictionary<string, string>PrepareParams(Dictionary<string, dynamic> parametros)
@@ -168,14 +196,6 @@ namespace MigradorRP.libs
             }
 
             return newParams;
-        }
-
-        public void Update(Dictionary<string, dynamic> parametros, string where = "")
-        {
-            if (string.IsNullOrEmpty(where))
-            {
-                throw new Exception("UPDATE sem WHERE no banco de dados");
-            }
         }
 
         public string PrepareInsertMultiplo(List<Dictionary<string, dynamic>> parametros)
@@ -267,6 +287,11 @@ namespace MigradorRP.libs
             con.Close();
         }
 
+        public void BeginTransaction() { transaction= con.BeginTransaction(); }
+        public void Commit() { transaction.Commit();}
+
+        public void Rollback() { transaction.Rollback(); }
+
         // FUNÇÕES UTEIS PARA O BANCO
 
         public string[] Endereco(string text)
@@ -310,5 +335,113 @@ namespace MigradorRP.libs
 
         }
 
+        public int undRet(string und)
+        {
+            
+            DataTable uniBD = this.ExecuteQuery("select uni_001 from unidades where uni_003='" + und + "' ");
+            int uniCod;
+
+            if (uniBD.Rows.Count == 0)
+            {
+                uniBD = this.ExecuteQuery("select uni_001 from unidades order by uni_001 desc limit 1");
+
+                int ultreg = uniBD.Rows.Count == 0 ? 1 : Int32.Parse(uniBD.Rows[0]["uni_001"].ToString()) + 1;
+                string dt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff");
+
+                this.BeginTransaction();
+
+                try
+                {
+                    Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
+                    {
+                        {"uni_001", ultreg},
+                        {"emp_001", 1},
+                        {"uni_002", und},
+                        {"uni_003", und},
+                        {"sit_001", 4},
+                        {"usu_001_1", 1 },
+                        {"dat_001_1", dt},
+
+                    };
+
+                    string query = this.PrepareInsert(bindUnid);
+                    this.ExecuteNonQuery(query);
+
+                    this.Commit();
+
+                    uniCod = ultreg;
+                }
+                catch (NpgsqlException e)
+                {
+                    this.Rollback();
+                    throw e;
+                }
+            }
+            else
+            {
+                uniCod = Int32.Parse(uniBD.Rows[0]["uni_001"].ToString());
+            }
+            return uniCod;
+        }
+
+        public int catRet(string cat)
+        {
+            try
+            {
+                int catCod = 0;
+                if (cat != "")
+                {
+                    DataTable catBD = this.ExecuteQuery($"select cat_001 from categoria where cat_002='{cat.ToUpper()}' ");
+
+                    if (catBD.Rows.Count == 0)
+                    {
+                        catBD = this.ExecuteQuery("select cat_001 from categoria order by cat_001 desc limit 1");
+                        int ultreg = catBD.Rows.Count == 0 ? 1 : Int32.Parse(catBD.Rows[0]["cat_001"].ToString()) + 1;
+                        string dt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff");
+
+                        this.BeginTransaction();
+
+                        try
+                        {
+
+                            Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
+                            {
+                                {"cat_001", ultreg},
+                                {"emp_001", 1},
+                                {"cat_002", cat.ToUpper()},
+                                {"sit_001", 4},
+                                {"usu_001_1", 1},
+                                {"dat_001_1", dt },
+                                {"cat_003", 1},
+                                {"b_exibir_icone", false},
+
+                            };
+
+                            string query = this.PrepareInsert(bindUnid);
+                            this.ExecuteNonQuery(query);
+
+                            this.Commit();
+
+                            catCod = ultreg;
+                        }
+                        catch (NpgsqlException e)
+                        {
+                            this.Rollback();
+                            throw e;
+                        }
+
+                    }
+                    else
+                    {
+                        catCod = Int32.Parse(catBD.Rows[0]["cat_001"].ToString());
+                    }
+                }
+                return catCod;
+            }
+            catch (Exception err)
+            {
+                Funcoes.ChamaAlerta("Não foi possivel definir quantidades.\nMotivo: " + err.Message, "error");
+            }
+        }
     }
 }

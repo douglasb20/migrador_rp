@@ -6,7 +6,7 @@ using System.Windows.Forms;
 namespace MigradorRP
 {
 
-    static class Util
+    static class Funcoes
     {
         private static string titulo = ConfigurationManager.AppSettings["appTitle"];
         public static void ErrorMessage(string text)
@@ -124,11 +124,6 @@ namespace MigradorRP
                 throw ex;
             }
         }
-
-
-
-        
-
 
     }
 }

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MigradorRP.libs
+namespace MigradorRP.libs.DAOSVR
 {
-    internal class FornecedorDAO : DefaultModel
+    internal class ClientesVRDAO : DefaultModelVR
     {
-        public FornecedorDAO()
+        public ClientesVRDAO()
         {
-            this.tabela = "fornecedor";
+            this.tabela = "clientes";
         }
     }
 }

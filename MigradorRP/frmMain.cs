@@ -1,6 +1,5 @@
 ﻿using FontAwesome.Sharp;
 using MigradorRP.libs;
-using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -10,8 +9,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Linq;
+
 
 namespace MigradorRP
 {
@@ -25,19 +25,14 @@ namespace MigradorRP
                 this.Paint += new PaintEventHandler(Element_Paint);
                 tmrBorda.Tick += new EventHandler(DesignAndActions.timer1_Tick);
 
-                ConfigReader.LoadConfig(pathConfig);
-
                 lblTopBar.Text = titulo.ToString() + " | MigradorRP";
-
 
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, titulo, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
             }
         }
-
 
         public static Dictionary<string, string> config;
 
@@ -46,7 +41,7 @@ namespace MigradorRP
         public static string fileConfig                 = "config.conf";
         public static string pathConfig                 = Path.Combine( caminho , fileConfig);
         public string titulo                            = ConfigurationManager.AppSettings["appTitle"];
-
+        public DataSet Tabelas                          = new DataSet();
 
         private void Element_Paint(object sender, PaintEventArgs e)
         {
@@ -64,91 +59,73 @@ namespace MigradorRP
             this.Region = new Region(forma);
         }
 
-
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
         private extern static void ReleaseCapture();
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        [DllImport("User32.dll", CharSet = CharSet.Auto)]
-        public static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
-
-        [DllImport("User32.dll")]
-        private static extern IntPtr GetWindowDC(IntPtr hWnd);
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-            const int WM_NCPAINT = 0x85;
-            if (m.Msg == WM_NCPAINT)
-            {
-                IntPtr hdc = GetWindowDC(m.HWnd);
-                if ((int)hdc != 0)
-                {
-                    Graphics g = Graphics.FromHdc(hdc);
-                    g.FillRectangle(Brushes.Green, new Rectangle(0, 0, 4800, 23));
-                    g.Flush();
-                    ReleaseDC(m.HWnd, hdc);
-                }
-            }
-        }
         private void frmMain_Load(object sender, EventArgs e)
         {
-            string textFilter = "Arquivos Excel | *.xls; *.xlsx";
-            string titleDialog = "Selecione uma planilha para importar no sistema";
+            try
+            {
+                ConfigReader.LoadConfig(pathConfig);
+                string textFilter = "Arquivos Excel | *.xls; *.xlsx";
+                string titleDialog = "Selecione uma planilha para importar no sistema";
 
-            Console.WriteLine("Oi");
+                ToolTip toolBtValidate = new ToolTip();
+                toolBtValidate.SetToolTip(btnValidateFiles, "Validar planilhas");
+                toolBtValidate.SetToolTip(btnCancelFiles, "Remover planilhas");
+                toolBtValidate.SetToolTip(btnSetSystem, "Configurações do migrador");
+                toolBtValidate.SetToolTip(BtnFileProd, "Escolha uma planilha de produtos");
+                toolBtValidate.SetToolTip(btnFileClient, "Escolha uma planilha de clientes");
+                toolBtValidate.SetToolTip(btnFileFornecedor, "Escolha uma planilha de fornecedores");
+                toolBtValidate.InitialDelay = 250;
 
-            ToolTip toolBtValidate = new ToolTip();
-            toolBtValidate.SetToolTip(btnValidateFiles, "Validar planilhas");
-            toolBtValidate.SetToolTip(btnCancelFiles, "Remover planilhas");
-            toolBtValidate.SetToolTip(btnSetSystem, "Configurações do migrador");
-            toolBtValidate.SetToolTip(BtnFileProd, "Escolha uma planilha de produtos");
-            toolBtValidate.SetToolTip(btnFileClient, "Escolha uma planilha de clientes");
-            toolBtValidate.SetToolTip(btnFileFornecedor, "Escolha uma planilha de fornecedores");
-            toolBtValidate.InitialDelay = 250;
-            
-            lblTabClient.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
-            lblTabClient.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+                lblTabClient.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
+                lblTabClient.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
 
-            lblTabProd.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
-            lblTabProd.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+                lblTabProd.MouseEnter   += new EventHandler(DesignAndActions.lblMouseEnter);
+                lblTabProd.MouseLeave   += new EventHandler(DesignAndActions.lblMouseOut);
 
-            lblTabForn.MouseEnter += new EventHandler(DesignAndActions.lblMouseEnter);
-            lblTabForn.MouseLeave += new EventHandler(DesignAndActions.lblMouseOut);
+                lblTabForn.MouseEnter   += new EventHandler(DesignAndActions.lblMouseEnter);
+                lblTabForn.MouseLeave   += new EventHandler(DesignAndActions.lblMouseOut);
 
-            fileDialogProd.Filter = textFilter;
-            fileDialogProd.Title = titleDialog;
+                fileDialogProd.Filter       = textFilter;
+                fileDialogProd.Title        = titleDialog;
 
-            fileDialogClient.Filter = textFilter;
-            fileDialogClient.Title = titleDialog;
+                fileDialogClient.Filter     = textFilter;
+                fileDialogClient.Title      = titleDialog;
 
-            fileDialogForn.Filter = textFilter;
-            fileDialogForn.Title = titleDialog;
+                fileDialogForn.Filter       = textFilter;
+                fileDialogForn.Title        = titleDialog;
 
-            btnCancelFiles.Enabled = false;
-            btnCancelFiles.IconColor = Color.FromArgb(24, 24, 24);
+                btnCancelFiles.Enabled      = false;
+                btnCancelFiles.IconColor    = Color.FromArgb(24, 24, 24);
 
-            frmConfigImportacao frmConfig = new frmConfigImportacao(this);
-            frmConfig.canCloseApp = true;
-            frmConfig.ShowDialog();
-            this.Hide();
+                DesignAndActions.DesactiveTabs();
+                pnlDadosImp.Hide();
+                lblAviso.Hide();
+                btnImport.Hide();
 
-            tmrBorda.Interval = 1;
+                this.Height = 250;
 
-            dtGridProdutos.DataBindingComplete += new DataGridViewBindingCompleteEventHandler(dtGridProdutos_DataBindingComplete);
+                frmConfigImportacao frmConfig = new frmConfigImportacao(this);
+                frmConfig.canCloseApp = true;
+                frmConfig.ShowDialog();
+                this.Hide();
 
+                tmrBorda.Interval = 1;
+            }
+            catch(Exception err) {
+                MessageBox.Show(err.Message, titulo, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Application.Exit();
+            }
         }
 
         public void moverForm()
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
-        }
-
-        private void dtGridProdutos_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
-        {
-            MessageBox.Show("Dados carregados com sucesso!");
         }
 
         private void lblClose_Click(object sender, EventArgs e)
@@ -182,7 +159,7 @@ namespace MigradorRP
 
             if (fileDialogProd.ShowDialog() == DialogResult.OK)
             {
-                btn.Text = fileDialogProd.SafeFileName;
+                btn.Text = fileDialogProd.SafeFileName.Length > 15 ? fileDialogProd.SafeFileName.Substring(0,15) + "..." : fileDialogProd.SafeFileName;
                 btn.IconChar = IconChar.FileCircleCheck;
             }
             else
@@ -200,13 +177,13 @@ namespace MigradorRP
 
             if (fileDialogClient.ShowDialog() == DialogResult.OK)
             {
-                btn.Text = fileDialogClient.SafeFileName;
+                btn.Text = fileDialogClient.SafeFileName.Length > 15 ? fileDialogClient.SafeFileName.Substring(0, 15) + "..." : fileDialogClient.SafeFileName;
                 btn.IconChar = IconChar.FileCircleCheck;
             }
             else
             {
-                btn.Text          = "Clientes...";
-                btn.IconChar = IconChar.FileArrowUp;
+                btn.Text                    = "Clientes...";
+                btn.IconChar                = IconChar.FileArrowUp;
                 fileDialogClient.FileName   = "";
             }
 
@@ -218,7 +195,7 @@ namespace MigradorRP
 
             if (fileDialogForn.ShowDialog() == DialogResult.OK)
             {
-                btn.Text = fileDialogForn.SafeFileName;
+                btn.Text = fileDialogForn.SafeFileName.Length > 15 ? fileDialogForn.SafeFileName.Substring(0, 15) + "..." : fileDialogForn.SafeFileName;
                 btn.IconChar = IconChar.FileCircleCheck;
             }
             else
@@ -232,7 +209,6 @@ namespace MigradorRP
 
         private void btnCancelFiles_Click(object sender, EventArgs e)
         {
-            
             try
             {
 
@@ -257,115 +233,55 @@ namespace MigradorRP
                 btnCancelFiles.Enabled = false;
                 btnCancelFiles.IconColor = Color.FromArgb(24, 24, 24);
 
+                dtGridProdutos.DataSource = null;
+                dtGridClientes.DataSource = null;
+                dtGridFornecedores.DataSource = null;
+                pnlDadosImp.Hide();
+                btnImport.Hide();
+
+
+                DesignAndActions.DesactiveTabs();
+
+
+                this.Height = 250;
+
             }
             catch(Exception error) {
-                Util.ErrorMessage(error.Message);
+                Funcoes.ErrorMessage(error.Message);
             }
         }
 
-        private void btnValidateFiles_Click(object sender, EventArgs e)
+        private async void btnValidateFiles_Click(object sender, EventArgs e)
         {
             try
             {
-                if (fileDialogProd.FileName == "" && fileDialogClient.FileName == "" && fileDialogForn.FileName == "")
-                {
-                    throw new Exception("Nenhum arquivo foi selecionado");
-                }
-
-                btnValidateFiles.Enabled = false;
-                btnValidateFiles.IconColor = Color.FromArgb(24, 24, 24);
-
-                BtnFileProd.Enabled = false;
-                btnFileClient.Enabled = false;
-                btnFileFornecedor.Enabled = false;
-
-                btnCancelFiles.Enabled = true;
-                btnCancelFiles.IconColor = Color.White;
-
-                string abrir = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source='{0}';Extended Properties='Excel 12.0 Xml;HDR=YES;ReadOnly=True';", fileDialogProd.FileName);
-
-                OleDbConnection con = new OleDbConnection(abrir);
-                con.Open();
-                DataTable dt = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-
-
-                string planilha = dt.Rows[0]["TABLE_NAME"].ToString();
-                OleDbDataAdapter da = new OleDbDataAdapter("SELECT * FROM [" + planilha + "] ;", con);
-                DataTable produtos = new DataTable();
-                da.Fill(produtos);
-
-                MessageBox.Show(produtos.Rows.Count.ToString());
-
-                dtGridProdutos.DataSource = produtos;
-
-                //foreach (DataRow row in dt.Rows)
-                //{
-                //    cboFor.Items.Add(row["TABLE_NAME"].ToString().Replace("$", "").Replace("'", ""));
-                //    i++;
-                //}
-
-                con.Close();
-                DesignAndActions.ActiveTab(lblTabProd, tmrBorda);
+                Tabelas.Reset();
+                await ValidaPlanilhas();
             }
             catch(Exception err)
             {
-                Util.ErrorMessage(err.Message);
+                lblAviso.Hide();
+                Funcoes.ErrorMessage(err.Message);
             }
             
         }
 
         private void lblTabProd_Click(object sender, EventArgs e)
         {
-            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda, dtGridProdutos);
+            lblRegistros.Text = $"Registros: {Tabelas.Tables["produtos"].Rows.Count}";
         }
 
         private void lblTabClient_Click(object sender, EventArgs e)
         {
-            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda, dtGridClientes);
+            lblRegistros.Text = $"Registros: {Tabelas.Tables["clientes"].Rows.Count}";
         }
 
         private void lblTabForn_Click(object sender, EventArgs e)
         {
-            DesignAndActions.ActiveTab(sender as Label, tmrBorda);
-        }
-
-        private void btNeutro_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                DefaultModel sql = new FornecedorDAO();
-                //DataRowCollection result =  sql.getAll("materiais", "1=1 and mat_001=800 limit 1");
-
-                List<Dictionary<string, dynamic>> bindMaterial = new List<Dictionary<string, dynamic>>();
-
-                //dynamic teste = sql.prepareParams(bindMaterial);
-                Dictionary<string, dynamic> nomes = new Dictionary<string, dynamic>
-                {
-                    {"nome", "Douglas" },
-                    {"idade", 35 },
-                    {"valor", 12.45 }
-                };
-
-                bindMaterial.Add(nomes);
-
-                nomes = new Dictionary<string, dynamic>
-                {
-                    {"nome", "Rayene" },
-                    {"idade", 29 },
-                    {"valor", 44.81 }
-                };
-
-                bindMaterial.Add(nomes);
-
-                string teste = sql.PrepareUpdate(nomes);
-
-                MessageBox.Show(teste);
-
-            }
-            catch (Exception err)
-            {
-                MessageBox.Show(err.Message, "Errinho");
-            }
+            DesignAndActions.ActiveTab(sender as Label, tmrBorda, dtGridFornecedores);
+            lblRegistros.Text = $"Registros: {Tabelas.Tables["fornecedores"].Rows.Count}";
         }
 
         private void btnMin_MouseEnter(object sender, EventArgs e)
@@ -384,9 +300,239 @@ namespace MigradorRP
             frmConfig.ShowDialog();
         }
 
-        private void pnlDadosImp_Paint(object sender, PaintEventArgs e)
+        private void lblTopBar_MouseDown(object sender, MouseEventArgs e)
         {
+            Cursor.Current= Cursors.SizeAll;
+        }
 
+        private async Task ValidaPlanilhas()
+        {
+            try
+            {
+                if (fileDialogProd.FileName == "" && fileDialogClient.FileName == "" && fileDialogForn.FileName == "")
+                {
+                    throw new Exception("Nenhum arquivo foi selecionado");
+                }
+
+                btnValidateFiles.Enabled    = false;
+                btnValidateFiles.IconColor  = Color.FromArgb(24, 24, 24);
+
+                BtnFileProd.Enabled         = false;
+                btnFileClient.Enabled       = false;
+                btnFileFornecedor.Enabled   = false;
+
+                btnCancelFiles.Enabled      = true;
+                btnCancelFiles.IconColor    = Color.White;
+
+                bool carregaProd            = false;
+                bool carregaClient          = false;
+                bool carregaForn            = false;
+                Label firstTab              = null;
+                DataGridView gridLoad       = null;
+
+                if ( !string.IsNullOrEmpty( fileDialogProd.FileName ) )
+                {
+                    await CarregaTabelaProdutos();
+                    carregaProd = true;
+                    firstTab    = lblTabProd;
+                    gridLoad    = dtGridProdutos;
+                }
+                if(!string.IsNullOrEmpty(fileDialogClient.FileName))
+                {
+                    await CarregaTabelaClientes();
+                    carregaClient = true;
+                    if(firstTab == null)
+                    {
+                        firstTab = lblTabClient;
+                        gridLoad = dtGridClientes;
+                    }
+                }
+                if (!string.IsNullOrEmpty(fileDialogForn.FileName))
+                {
+                    await CarregaTabelaFornecedores();
+                    carregaForn = true;
+                    if (firstTab == null)
+                    {
+                        firstTab = lblTabForn;
+                        gridLoad = dtGridFornecedores;
+                    }
+                }
+
+                OrganizaBotoesTab(carregaProd,carregaClient,carregaForn);
+                lblRegistros.Text = $"Registros: {gridLoad.RowCount.ToString()}";
+
+                lblAviso.Hide();
+                this.Height = 700;
+                pnlDadosImp.Show();
+
+                DesignAndActions.ActiveTab(firstTab, tmrBorda, gridLoad, false);
+                btnImport.Show();
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
+        }
+
+        private async Task CarregaTabelaProdutos()
+        {
+            try
+            {
+                lblAviso.Show();
+                lblAviso.Text = "Carregando Produtos, aguarde...";
+                await Task.Run(() =>
+                {
+
+                    string abrir = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source='{0}';Extended Properties='Excel 12.0 Xml;HDR=YES;ReadOnly=True';", fileDialogProd.FileName);
+
+                    OleDbConnection con = new OleDbConnection(abrir);
+                    con.Open();
+
+                    DataTable dt = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+                    string planilha = dt.Rows[0]["TABLE_NAME"].ToString();
+
+
+                    OleDbDataAdapter da = new OleDbDataAdapter($"SELECT * FROM [{planilha}] " + (ConfigReader.GetConfigValue("Produtos", "mostra_inativos") == "true" ? "" : "WHERE ativo=true ")  + ";", con);
+                    da.Fill(Tabelas, "produtos");
+
+                    dtGridProdutos.Invoke((MethodInvoker)delegate
+                    {
+                        dtGridProdutos.DataSource = Tabelas.Tables["produtos"];
+                    });
+
+                    con.Close();
+
+                });
+
+            }
+            catch(OleDbException err)
+            {
+                throw err;
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
+        }
+        
+        private async Task CarregaTabelaClientes()
+        {
+            try
+            {
+                lblAviso.Show();
+                lblAviso.Text = "Carregando Clientes, aguarde...";
+                await Task.Run(() =>
+                {
+
+                    string abrir = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source='{0}';Extended Properties='Excel 12.0 Xml;HDR=YES;ReadOnly=True';", fileDialogClient.FileName);
+
+                    OleDbConnection con = new OleDbConnection(abrir);
+                    con.Open();
+
+                    DataTable dt = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+                    string planilha = dt.Rows[0]["TABLE_NAME"].ToString();
+
+                    OleDbDataAdapter da = new OleDbDataAdapter($"SELECT * FROM [{planilha}] " + (ConfigReader.GetConfigValue("Clientes", "mostra_inativos") == "true" ? "" : "WHERE ativo=true ") + ";", con);
+                    da.Fill(Tabelas, "clientes");
+
+                    dtGridProdutos.Invoke((MethodInvoker)delegate
+                    {
+                        dtGridClientes.DataSource = Tabelas.Tables["clientes"];
+                    });
+
+                    con.Close();
+
+                });
+
+            }
+            catch (Exception err)
+            {
+                throw err;
+            }
+        }
+        
+        private async Task CarregaTabelaFornecedores()
+        {
+            try
+            {
+                lblAviso.Show();
+                lblAviso.Text = "Carregando Fornecedores, aguarde...";
+                await Task.Run(() =>
+                {
+
+                    string abrir = String.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source='{0}';Extended Properties='Excel 12.0 Xml;HDR=YES;ReadOnly=True';", fileDialogForn.FileName);
+
+                    OleDbConnection con = new OleDbConnection(abrir);
+                    con.Open();
+
+                    DataTable dt = con.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
+                    string planilha = dt.Rows[0]["TABLE_NAME"].ToString();
+
+
+                    OleDbDataAdapter da = new OleDbDataAdapter($"SELECT * FROM [{planilha}] " + (ConfigReader.GetConfigValue("Fornecedores", "mostra_inativos") == "true" ? "" : "WHERE ativo=true ") + ";", con);
+                    da.Fill(Tabelas, "fornecedores");
+
+                    dtGridProdutos.Invoke((MethodInvoker)delegate
+                    {
+                        dtGridFornecedores.DataSource = Tabelas.Tables["fornecedores"];
+                    });
+
+                    con.Close();
+
+                });
+
+            }
+            catch (Exception err)
+            {
+                throw err;
+            }
+        }
+
+        private void OrganizaBotoesTab(bool prod, bool client, bool forn)
+        {
+            int leftOriginal = 10;
+            lblTabProd.Hide();
+            lblTabClient.Hide();
+            lblTabForn.Hide();
+
+            if(prod )
+            {
+                lblTabProd.Left= leftOriginal;
+                lblTabProd.Show();
+                leftOriginal += 165;
+            }
+
+            if(client)
+            {
+                lblTabClient.Left= leftOriginal;
+                lblTabClient.Show();
+                leftOriginal+= 165;
+            }
+            if(forn)
+            {
+                lblTabForn.Left= leftOriginal;
+                lblTabForn.Show();
+            }
+        }
+
+        private async void btnImport_Click(object sender, EventArgs e)
+        {
+            await ImportaProdutos();
+        }
+
+        private async Task ImportaProdutos()
+        {
+            try
+            {
+                List<Dictionary<string, string>> produtos =  UteisImportacao.PreparaProdutos(Tabelas.Tables["produtos"].Rows);
+                MessageBox.Show(string.Join(",", produtos[0]));
+            }catch(Exception err)
+            {
+                Funcoes.ErrorMessage(err.Message); 
+            }
         }
     }
 }

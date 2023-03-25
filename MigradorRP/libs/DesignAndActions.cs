@@ -31,24 +31,34 @@ namespace MigradorRP
             }
         }
 
-        public static void ActiveTab(Label sender, Timer tmr)
+        public static void ActiveTab(Label sender, Timer tmr, DataGridView dt, bool noValidade = true )
         {
-            DesactiveTabs();
+            dynamic frm = Application.OpenForms["frmMain"];
             Label lblTarget = sender;
-            lblActivated = sender;
-            tmr.Enabled = true;
 
+            if(lblActivated == lblTarget && noValidade)
+            {
+                return;
+            }
+
+            DesactiveTabs();
+            lblActivated        = sender;
+            tmr.Enabled         = true;
+            dt.Size             = new Size(frm.Width, frm.Controls["pnlDadosImp"].Height - dt.Location.Y );
+            dt.Location         = new Point(0, dt.Top);
             lblTarget.BackColor = Color.FromArgb(255, 192, 128);
             lblTarget.ForeColor = Color.Black;
+
+            dt.Show();
 
         }
 
         public static void timer1_Tick(object sender, EventArgs e)
         {
+            Timer tmr = (Timer)sender;
             Panel pnlBorda = Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["pnlBorda"] as Panel;
             int toPosition = lblActivated.Left - pnlBorda.Left;
-            bool type = toPosition > 0 ? true : false;
-            Timer tmr = (Timer)sender;
+            bool type = toPosition > 0 ? true : false ;
 
             if (toPosition != 0)
             {
@@ -73,6 +83,10 @@ namespace MigradorRP
             Label l1 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabProd"];
             Label l2 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabClient"];
             Label l3 = (Label)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["lblTabForn"];
+            
+            DataGridView dt1 = (DataGridView)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["dtGridProdutos"];
+            DataGridView dt2 = (DataGridView)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["dtGridClientes"];
+            DataGridView dt3 = (DataGridView)Application.OpenForms["frmMain"].Controls["pnlDadosImp"].Controls["dtGridFornecedores"];
 
             l1.BackColor = Color.Transparent;
             l1.ForeColor = Color.White;
@@ -82,6 +96,10 @@ namespace MigradorRP
 
             l3.BackColor = Color.Transparent;
             l3.ForeColor= Color.White;
+
+            dt1.Hide();
+            dt2.Hide();
+            dt3.Hide();
 
         }
     }

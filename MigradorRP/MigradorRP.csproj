@@ -53,6 +53,26 @@
   <PropertyGroup>
     <ApplicationIcon>migrando.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ConfigParser, Version=0.3.8.2, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Salaros.ConfigParser.0.3.8\lib\net45\ConfigParser.dll</HintPath>
@@ -131,8 +151,11 @@
     <Compile Include="frmConfigImportacao.Designer.cs">
       <DependentUpon>frmConfigImportacao.cs</DependentUpon>
     </Compile>
+    <Compile Include="libs\DAOSPG\ClientesPGDAO.cs" />
     <Compile Include="libs\ConfigReader.cs" />
-    <Compile Include="libs\DefaultModel.cs" />
+    <Compile Include="libs\DAOSPG\DefaultModelPG.cs" />
+    <Compile Include="libs\DAOSVR\ClientesVRDAO.cs" />
+    <Compile Include="libs\DAOSVR\DefaultModelVR.cs" />
     <Compile Include="libs\DesignAndActions.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
@@ -140,11 +163,12 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="libs\FornecedorDAO.cs" />
-    <Compile Include="libs\MateriaisDAO.cs" />
+    <Compile Include="libs\DAOSPG\FornecedorPGDAO.cs" />
+    <Compile Include="libs\DAOSPG\MateriaisPGDAO.cs" />
+    <Compile Include="libs\UteisImportacao.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="libs\Util.cs" />
+    <Compile Include="libs\Funcoes.cs" />
     <EmbeddedResource Include="frmConfigImportacao.resx">
       <DependentUpon>frmConfigImportacao.cs</DependentUpon>
     </EmbeddedResource>

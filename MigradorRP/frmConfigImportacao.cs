@@ -47,10 +47,13 @@ namespace MigradorRP
             cfgCalcMargem.Checked           = ConfigReader.GetConfigValue("Produtos", "calcular_margem") == "true";
             cfgAjustaPis.Checked            = ConfigReader.GetConfigValue("Produtos", "ajusta_pis_csosn") == "true";
             cfgAjustaCofins.Checked         = ConfigReader.GetConfigValue("Produtos", "ajusta_cofins_csosn") == "true";
+            cfgProdShowInat.Checked         = ConfigReader.GetConfigValue("Produtos", "mostra_inativos") == "true";
 
             cfgCliZeroEsquerda.Checked      = ConfigReader.GetConfigValue("Clientes", "cli_remover_zeros_esquerda") == "true";
+            cfgCliShowInat.Checked          = ConfigReader.GetConfigValue("Clientes", "mostra_inativos") == "true";
 
             cfgFornZeroEsquerda.Checked     = ConfigReader.GetConfigValue("Fornecedores", "forn_remover_zeros_esquerda") == "true";
+            cfgFornShowInat.Checked         = ConfigReader.GetConfigValue("Fornecedores", "mostra_inativos") == "true";
 
             if (ConfigReader.tipoImportacao == null)
             {
@@ -210,6 +213,24 @@ namespace MigradorRP
         {
             CheckBox chk = (CheckBox)sender;
             changeConfig(chk, "Produtos", "ajusta_cofins_csosn");
+        }
+
+        private void cfgProdShowInat_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "mostra_inativos");
+        }
+
+        private void cfgCliShowInat_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Clientes", "mostra_inativos");
+        }
+
+        private void cfgFornShowInat_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Fornecedores", "mostra_inativos");
         }
     }
 }

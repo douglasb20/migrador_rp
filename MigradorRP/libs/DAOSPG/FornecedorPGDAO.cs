@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MigradorRP.libs
 {
-    internal class MateriaisDAO : DefaultModel
+    internal class FornecedorPGDAO : DefaultModelPG
     {
-        public MateriaisDAO()
+        public FornecedorPGDAO()
         {
-            this.tabela = "materiais";
+            this.tabela = "fornecedor";
         }
     }
 }

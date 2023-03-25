@@ -297,6 +297,7 @@ namespace MigradorRP
         private void btnSetSystem_Click(object sender, EventArgs e)
         {
             frmConfigImportacao frmConfig = new frmConfigImportacao(this);
+            frmConfig.ShowInTaskbar= false;
             frmConfig.ShowDialog();
         }
 

@@ -39,6 +39,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cboEntrada = new System.Windows.Forms.ComboBox();
             this.pnlConfigOptions = new System.Windows.Forms.Panel();
+            this.cfgFornShowInat = new System.Windows.Forms.CheckBox();
+            this.cfgCliShowInat = new System.Windows.Forms.CheckBox();
+            this.cfgProdShowInat = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.cfgAjustaCofins = new System.Windows.Forms.CheckBox();
@@ -50,9 +53,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.cfgzProdZerosEsquerda = new System.Windows.Forms.CheckBox();
-            this.cfgProdShowInat = new System.Windows.Forms.CheckBox();
-            this.cfgCliShowInat = new System.Windows.Forms.CheckBox();
-            this.cfgFornShowInat = new System.Windows.Forms.CheckBox();
             this.pnlConfigOptions.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -212,6 +212,45 @@
             this.pnlConfigOptions.Size = new System.Drawing.Size(450, 367);
             this.pnlConfigOptions.TabIndex = 31;
             // 
+            // cfgFornShowInat
+            // 
+            this.cfgFornShowInat.AutoSize = true;
+            this.cfgFornShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgFornShowInat.ForeColor = System.Drawing.Color.White;
+            this.cfgFornShowInat.Location = new System.Drawing.Point(250, 252);
+            this.cfgFornShowInat.Name = "cfgFornShowInat";
+            this.cfgFornShowInat.Size = new System.Drawing.Size(140, 29);
+            this.cfgFornShowInat.TabIndex = 41;
+            this.cfgFornShowInat.Text = "Mostrar Inativos";
+            this.cfgFornShowInat.UseVisualStyleBackColor = true;
+            this.cfgFornShowInat.CheckStateChanged += new System.EventHandler(this.cfgFornShowInat_CheckStateChanged);
+            // 
+            // cfgCliShowInat
+            // 
+            this.cfgCliShowInat.AutoSize = true;
+            this.cfgCliShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgCliShowInat.ForeColor = System.Drawing.Color.White;
+            this.cfgCliShowInat.Location = new System.Drawing.Point(250, 160);
+            this.cfgCliShowInat.Name = "cfgCliShowInat";
+            this.cfgCliShowInat.Size = new System.Drawing.Size(140, 29);
+            this.cfgCliShowInat.TabIndex = 40;
+            this.cfgCliShowInat.Text = "Mostrar Inativos";
+            this.cfgCliShowInat.UseVisualStyleBackColor = true;
+            this.cfgCliShowInat.CheckStateChanged += new System.EventHandler(this.cfgCliShowInat_CheckStateChanged);
+            // 
+            // cfgProdShowInat
+            // 
+            this.cfgProdShowInat.AutoSize = true;
+            this.cfgProdShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgProdShowInat.ForeColor = System.Drawing.Color.White;
+            this.cfgProdShowInat.Location = new System.Drawing.Point(224, 75);
+            this.cfgProdShowInat.Name = "cfgProdShowInat";
+            this.cfgProdShowInat.Size = new System.Drawing.Size(140, 29);
+            this.cfgProdShowInat.TabIndex = 39;
+            this.cfgProdShowInat.Text = "Mostrar Inativos";
+            this.cfgProdShowInat.UseVisualStyleBackColor = true;
+            this.cfgProdShowInat.CheckStateChanged += new System.EventHandler(this.cfgProdShowInat_CheckStateChanged);
+            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
@@ -342,51 +381,12 @@
             this.cfgzProdZerosEsquerda.UseVisualStyleBackColor = true;
             this.cfgzProdZerosEsquerda.CheckStateChanged += new System.EventHandler(this.cfgzProdZerosEsquerda_CheckStateChanged);
             // 
-            // cfgProdShowInat
-            // 
-            this.cfgProdShowInat.AutoSize = true;
-            this.cfgProdShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cfgProdShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgProdShowInat.Location = new System.Drawing.Point(224, 75);
-            this.cfgProdShowInat.Name = "cfgProdShowInat";
-            this.cfgProdShowInat.Size = new System.Drawing.Size(140, 29);
-            this.cfgProdShowInat.TabIndex = 39;
-            this.cfgProdShowInat.Text = "Mostrar Inativos";
-            this.cfgProdShowInat.UseVisualStyleBackColor = true;
-            this.cfgProdShowInat.CheckStateChanged += new System.EventHandler(this.cfgProdShowInat_CheckStateChanged);
-            // 
-            // cfgCliShowInat
-            // 
-            this.cfgCliShowInat.AutoSize = true;
-            this.cfgCliShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cfgCliShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgCliShowInat.Location = new System.Drawing.Point(250, 160);
-            this.cfgCliShowInat.Name = "cfgCliShowInat";
-            this.cfgCliShowInat.Size = new System.Drawing.Size(140, 29);
-            this.cfgCliShowInat.TabIndex = 40;
-            this.cfgCliShowInat.Text = "Mostrar Inativos";
-            this.cfgCliShowInat.UseVisualStyleBackColor = true;
-            this.cfgCliShowInat.CheckStateChanged += new System.EventHandler(this.cfgCliShowInat_CheckStateChanged);
-            // 
-            // cfgFornShowInat
-            // 
-            this.cfgFornShowInat.AutoSize = true;
-            this.cfgFornShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cfgFornShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgFornShowInat.Location = new System.Drawing.Point(250, 252);
-            this.cfgFornShowInat.Name = "cfgFornShowInat";
-            this.cfgFornShowInat.Size = new System.Drawing.Size(140, 29);
-            this.cfgFornShowInat.TabIndex = 41;
-            this.cfgFornShowInat.Text = "Mostrar Inativos";
-            this.cfgFornShowInat.UseVisualStyleBackColor = true;
-            this.cfgFornShowInat.CheckStateChanged += new System.EventHandler(this.cfgFornShowInat_CheckStateChanged);
-            // 
             // frmConfigImportacao
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.ClientSize = new System.Drawing.Size(448, 498);
+            this.ClientSize = new System.Drawing.Size(444, 494);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cboSistema);

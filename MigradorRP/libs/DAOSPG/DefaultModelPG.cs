@@ -389,6 +389,7 @@ namespace MigradorRP.libs
             try
             {
                 int catCod = 0;
+
                 if (cat != "")
                 {
                     DataTable catBD = this.ExecuteQuery($"select cat_001 from categoria where cat_002='{cat.ToUpper()}' ");
@@ -401,34 +402,25 @@ namespace MigradorRP.libs
 
                         this.BeginTransaction();
 
-                        try
+                        Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
                         {
+                            {"cat_001", ultreg},
+                            {"emp_001", 1},
+                            {"cat_002", cat.ToUpper()},
+                            {"sit_001", 4},
+                            {"usu_001_1", 1},
+                            {"dat_001_1", dt },
+                            {"cat_003", 1},
+                            {"b_exibir_icone", false},
 
-                            Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
-                            {
-                                {"cat_001", ultreg},
-                                {"emp_001", 1},
-                                {"cat_002", cat.ToUpper()},
-                                {"sit_001", 4},
-                                {"usu_001_1", 1},
-                                {"dat_001_1", dt },
-                                {"cat_003", 1},
-                                {"b_exibir_icone", false},
+                        };
 
-                            };
+                        string query = this.PrepareInsert(bindUnid);
+                        this.ExecuteNonQuery(query);
 
-                            string query = this.PrepareInsert(bindUnid);
-                            this.ExecuteNonQuery(query);
+                        this.Commit();
 
-                            this.Commit();
-
-                            catCod = ultreg;
-                        }
-                        catch (NpgsqlException e)
-                        {
-                            this.Rollback();
-                            throw e;
-                        }
+                        catCod = ultreg;
 
                     }
                     else
@@ -436,11 +428,17 @@ namespace MigradorRP.libs
                         catCod = Int32.Parse(catBD.Rows[0]["cat_001"].ToString());
                     }
                 }
+
                 return catCod;
+            }catch (NpgsqlException e)
+            {
+                this.Rollback();
+                throw e;
             }
             catch (Exception err)
             {
-                Funcoes.ChamaAlerta("Não foi possivel definir quantidades.\nMotivo: " + err.Message, "error");
+                this.Rollback();
+                throw err;
             }
         }
     }

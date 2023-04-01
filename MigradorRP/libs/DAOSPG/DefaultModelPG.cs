@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using MigradorRP.libs.DAOSPG;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,17 +23,7 @@ namespace MigradorRP.libs
         {
             try
             {
-                string dbBase   = ConfigReader.sistema == "LeCheff" ? "RP" : "SOFTMOBILE";
-                string host     = ConfigReader.GetConfigValue("PgDatabase","pgdbhost");
-                string dbuser   = ConfigReader.GetConfigValue("PgDatabase","pgdbuser");
-                string porta    = ConfigReader.GetConfigValue("PgDatabase","pgdbport");
-                string password = ConfigReader.GetConfigValue("PgDatabase", "pgdbpwd");
-                
-
-                con = new NpgsqlConnection("Server=" + host + ";Port=" + porta + ";User Id=" + dbuser + ";Password=" + password + ";Database=" + dbBase + ";");
-                con.Open();
-
-                TiraAcentoBD(con);
+                con = ConnectionPG.con;
 
             }catch(NpgsqlException e)
             {
@@ -43,7 +34,7 @@ namespace MigradorRP.libs
             }
         }
 
-        public void TiraAcentoBD(NpgsqlConnection conect)
+        public void TiraAcentoBD()
         {
             string[] cAcento = { "Á", "À", "Ã", "Â", "É", "Ê", "È", "Í", "Ì", "Î", "Ó", "Ò", "Ô", "Õ", "Ú", "Ù", "Ç", "''" };
             string[] sAcento = { "A", "A", "A", "A", "E", "E", "E", "I", "I", "I", "O", "O", "O", "O", "U", "U", "C", "" };
@@ -51,18 +42,18 @@ namespace MigradorRP.libs
             for (int i = 0; i < cAcento.Length; i++)
             {
                 string addDados = String.Format("Update cidades set cid_002=replace(cid_002,'{0}','{1}')", cAcento[i].ToString().ToUpper(), sAcento[i].ToString().ToUpper());
-                cmd = new NpgsqlCommand(addDados, conect);
+                cmd = new NpgsqlCommand(addDados, con);
                 cmd.ExecuteNonQuery();
             }
         }
 
-        private int ExecuteNonQuery(string query)
+        protected int ExecuteNonQuery(string query)
         {
             try
             {
                 NpgsqlCommand cmd = new NpgsqlCommand(query, con);
 
-                return (int)cmd.ExecuteScalar();
+                return (int)cmd.ExecuteNonQuery();
 
             }
             catch (NpgsqlException e)
@@ -75,7 +66,7 @@ namespace MigradorRP.libs
             }
         }
 
-        private DataTable ExecuteQuery(string query)
+        protected DataTable ExecuteQuery(string query)
         {
             try
             {
@@ -98,7 +89,7 @@ namespace MigradorRP.libs
             }
         }
         
-        public DefaultModelPG GetQuery(string where = "", string order = "") {
+        public DefaultModelPG GetQuery(string where = "", string order = "", string limit = "") {
             try
             {
                 string query = string.Format("SELECT * FROM {0} ", tabela);
@@ -112,6 +103,12 @@ namespace MigradorRP.libs
                 {
 
                     query = string.Concat(query, string.Format(" ORDER BY {0}", order));
+                }
+
+                if (!string.IsNullOrEmpty(limit))
+                {
+
+                    query = string.Concat(query, string.Format(" LIMIT {0}", limit));
                 }
 
                 queryData = ExecuteQuery(query);
@@ -138,7 +135,7 @@ namespace MigradorRP.libs
             return queryData;
         }
 
-        private void InsertMultiplos(List<Dictionary<string,dynamic>> parametros)
+        public void InsertMultiplos(List<Dictionary<string,dynamic>> parametros)
         {
             try
             {
@@ -182,7 +179,7 @@ namespace MigradorRP.libs
             ExecuteNonQuery(query);
         }
 
-        public Dictionary<string, string>PrepareParams(Dictionary<string, dynamic> parametros)
+        private Dictionary<string, string>PrepareParams(Dictionary<string, dynamic> parametros)
         {
             Dictionary<string, string> newParams = new Dictionary<string, string>();
 
@@ -198,7 +195,7 @@ namespace MigradorRP.libs
             return newParams;
         }
 
-        public string PrepareInsertMultiplo(List<Dictionary<string, dynamic>> parametros)
+        private string PrepareInsertMultiplo(List<Dictionary<string, dynamic>> parametros)
         {
             try
             {
@@ -227,7 +224,7 @@ namespace MigradorRP.libs
             }
         }
 
-        public string PrepareInsert(Dictionary<string, dynamic> parametros)
+        private string PrepareInsert(Dictionary<string, dynamic> parametros)
         {
             try
             {
@@ -251,7 +248,7 @@ namespace MigradorRP.libs
             }
         }
 
-        public string PrepareUpdate(Dictionary<string, dynamic> parametros, string where = "")
+        private string PrepareUpdate(Dictionary<string, dynamic> parametros, string where = "")
         {
             try
             {
@@ -287,159 +284,5 @@ namespace MigradorRP.libs
             con.Close();
         }
 
-        public void BeginTransaction() { transaction= con.BeginTransaction(); }
-        public void Commit() { transaction.Commit();}
-
-        public void Rollback() { transaction.Rollback(); }
-
-        // FUNÇÕES UTEIS PARA O BANCO
-
-        public string[] Endereco(string text)
-        {
-            string[] gAddress = new string[2];
-            int numberOfHyphens = 0;
-            int x = 0;
-            int y = 0;
-
-            if(string.IsNullOrEmpty( text ) ) {
-                gAddress[0] = text;
-                gAddress[1] = "S/N";
-                
-                return gAddress;
-            }
-
-            foreach (char c in text)
-            {
-                x++;
-                if (c == ',')
-                {
-                    numberOfHyphens++;
-                    y = x;
-                }
-            }
-
-            if (numberOfHyphens == 0)
-            {
-
-                gAddress[0] = text.Trim().ToUpper();
-                gAddress[1] = "S/N";
-            }
-            else
-            {
-                string endnum = text.Substring(y, text.Length - y);
-                gAddress[0] = text.Substring(0, y - 1).ToUpper();
-                gAddress[1] = endnum.Trim().ToUpper();
-            }
-
-            return gAddress;
-
-        }
-
-        public int undRet(string und)
-        {
-            
-            DataTable uniBD = this.ExecuteQuery("select uni_001 from unidades where uni_003='" + und + "' ");
-            int uniCod;
-
-            if (uniBD.Rows.Count == 0)
-            {
-                uniBD = this.ExecuteQuery("select uni_001 from unidades order by uni_001 desc limit 1");
-
-                int ultreg = uniBD.Rows.Count == 0 ? 1 : Int32.Parse(uniBD.Rows[0]["uni_001"].ToString()) + 1;
-                string dt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff");
-
-                this.BeginTransaction();
-
-                try
-                {
-                    Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
-                    {
-                        {"uni_001", ultreg},
-                        {"emp_001", 1},
-                        {"uni_002", und},
-                        {"uni_003", und},
-                        {"sit_001", 4},
-                        {"usu_001_1", 1 },
-                        {"dat_001_1", dt},
-
-                    };
-
-                    string query = this.PrepareInsert(bindUnid);
-                    this.ExecuteNonQuery(query);
-
-                    this.Commit();
-
-                    uniCod = ultreg;
-                }
-                catch (NpgsqlException e)
-                {
-                    this.Rollback();
-                    throw e;
-                }
-            }
-            else
-            {
-                uniCod = Int32.Parse(uniBD.Rows[0]["uni_001"].ToString());
-            }
-            return uniCod;
-        }
-
-        public int catRet(string cat)
-        {
-            try
-            {
-                int catCod = 0;
-
-                if (cat != "")
-                {
-                    DataTable catBD = this.ExecuteQuery($"select cat_001 from categoria where cat_002='{cat.ToUpper()}' ");
-
-                    if (catBD.Rows.Count == 0)
-                    {
-                        catBD = this.ExecuteQuery("select cat_001 from categoria order by cat_001 desc limit 1");
-                        int ultreg = catBD.Rows.Count == 0 ? 1 : Int32.Parse(catBD.Rows[0]["cat_001"].ToString()) + 1;
-                        string dt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss.fff");
-
-                        this.BeginTransaction();
-
-                        Dictionary<string, dynamic> bindUnid = new Dictionary<string, dynamic>()
-                        {
-                            {"cat_001", ultreg},
-                            {"emp_001", 1},
-                            {"cat_002", cat.ToUpper()},
-                            {"sit_001", 4},
-                            {"usu_001_1", 1},
-                            {"dat_001_1", dt },
-                            {"cat_003", 1},
-                            {"b_exibir_icone", false},
-
-                        };
-
-                        string query = this.PrepareInsert(bindUnid);
-                        this.ExecuteNonQuery(query);
-
-                        this.Commit();
-
-                        catCod = ultreg;
-
-                    }
-                    else
-                    {
-                        catCod = Int32.Parse(catBD.Rows[0]["cat_001"].ToString());
-                    }
-                }
-
-                return catCod;
-            }catch (NpgsqlException e)
-            {
-                this.Rollback();
-                throw e;
-            }
-            catch (Exception err)
-            {
-                this.Rollback();
-                throw err;
-            }
-        }
     }
 }

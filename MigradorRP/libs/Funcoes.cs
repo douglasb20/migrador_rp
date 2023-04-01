@@ -1,6 +1,7 @@
 ﻿using Npgsql;
 using System;
 using System.Configuration;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace MigradorRP
@@ -8,6 +9,18 @@ namespace MigradorRP
 
     static class Funcoes
     {
+
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+
+        public static void moverForm(Form frm)
+        {
+            ReleaseCapture();
+            SendMessage(frm.Handle, 0x112, 0xf012, 0);
+        }
+
         private static string titulo = ConfigurationManager.AppSettings["appTitle"];
         public static void ErrorMessage(string text)
         {

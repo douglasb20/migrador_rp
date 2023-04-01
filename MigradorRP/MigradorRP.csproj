@@ -151,9 +151,15 @@
     <Compile Include="frmConfigImportacao.Designer.cs">
       <DependentUpon>frmConfigImportacao.cs</DependentUpon>
     </Compile>
+    <Compile Include="libs\DAOSPG\CidadesPGDAO.cs" />
+    <Compile Include="libs\DAOSPG\ConnectionPG.cs" />
+    <Compile Include="libs\DAOSPG\SubcategoriaPGDAO.cs" />
     <Compile Include="libs\DAOSPG\ClientesPGDAO.cs" />
     <Compile Include="libs\ConfigReader.cs" />
     <Compile Include="libs\DAOSPG\DefaultModelPG.cs" />
+    <Compile Include="libs\DAOSPG\EstoqueMateriaisPGDAO.cs" />
+    <Compile Include="libs\DAOSPG\CategoriaPGDAO.cs" />
+    <Compile Include="libs\DAOSPG\UnidadesPGDAO.cs" />
     <Compile Include="libs\DAOSVR\ClientesVRDAO.cs" />
     <Compile Include="libs\DAOSVR\DefaultModelVR.cs" />
     <Compile Include="libs\DesignAndActions.cs" />

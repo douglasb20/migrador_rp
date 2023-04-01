@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MigradorRP.libs
 {
@@ -11,6 +7,20 @@ namespace MigradorRP.libs
         public MateriaisPGDAO()
         {
             this.tabela = "materiais";
+        }
+
+        public void LimpaTudoAntes()
+        {
+            try
+            {
+                string query = "truncate table materiais cascade; truncate table setor_estoque_material cascade";
+
+                this.ExecuteNonQuery(query);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }

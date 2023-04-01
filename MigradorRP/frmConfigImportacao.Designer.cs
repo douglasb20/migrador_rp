@@ -39,6 +39,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cboEntrada = new System.Windows.Forms.ComboBox();
             this.pnlConfigOptions = new System.Windows.Forms.Panel();
+            this.cfgFornUsaNumero = new System.Windows.Forms.CheckBox();
+            this.cfgCliUsaNumero = new System.Windows.Forms.CheckBox();
+            this.cfgProdSubPadrao = new System.Windows.Forms.CheckBox();
+            this.cfgProdBalanca = new System.Windows.Forms.CheckBox();
+            this.cfgAjustaCfop = new System.Windows.Forms.CheckBox();
             this.cfgFornShowInat = new System.Windows.Forms.CheckBox();
             this.cfgCliShowInat = new System.Windows.Forms.CheckBox();
             this.cfgProdShowInat = new System.Windows.Forms.CheckBox();
@@ -91,6 +96,8 @@
             this.lblTopBar.TabIndex = 23;
             this.lblTopBar.Text = "Configuraçao de importação";
             this.lblTopBar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTopBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lblTopBar_MouseDown);
+            this.lblTopBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lblTopBar_MouseMove);
             // 
             // cfgImpQtd
             // 
@@ -112,7 +119,7 @@
             this.btSaveConfig.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btSaveConfig.Font = new System.Drawing.Font("Poppins", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btSaveConfig.ForeColor = System.Drawing.Color.White;
-            this.btSaveConfig.Location = new System.Drawing.Point(298, 458);
+            this.btSaveConfig.Location = new System.Drawing.Point(292, 557);
             this.btSaveConfig.Name = "btSaveConfig";
             this.btSaveConfig.Size = new System.Drawing.Size(150, 40);
             this.btSaveConfig.TabIndex = 25;
@@ -129,7 +136,7 @@
             this.btnCancelCLose.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelCLose.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelCLose.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btnCancelCLose.Location = new System.Drawing.Point(0, 458);
+            this.btnCancelCLose.Location = new System.Drawing.Point(0, 557);
             this.btnCancelCLose.Name = "btnCancelCLose";
             this.btnCancelCLose.Size = new System.Drawing.Size(150, 40);
             this.btnCancelCLose.TabIndex = 26;
@@ -178,6 +185,7 @@
             // cboEntrada
             // 
             this.cboEntrada.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboEntrada.Enabled = false;
             this.cboEntrada.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboEntrada.FormattingEnabled = true;
             this.cboEntrada.ItemHeight = 23;
@@ -192,6 +200,11 @@
             // 
             // pnlConfigOptions
             // 
+            this.pnlConfigOptions.Controls.Add(this.cfgFornUsaNumero);
+            this.pnlConfigOptions.Controls.Add(this.cfgCliUsaNumero);
+            this.pnlConfigOptions.Controls.Add(this.cfgProdSubPadrao);
+            this.pnlConfigOptions.Controls.Add(this.cfgProdBalanca);
+            this.pnlConfigOptions.Controls.Add(this.cfgAjustaCfop);
             this.pnlConfigOptions.Controls.Add(this.cfgFornShowInat);
             this.pnlConfigOptions.Controls.Add(this.cfgCliShowInat);
             this.pnlConfigOptions.Controls.Add(this.cfgProdShowInat);
@@ -209,15 +222,80 @@
             this.pnlConfigOptions.Controls.Add(this.cfgImpQtd);
             this.pnlConfigOptions.Location = new System.Drawing.Point(0, 131);
             this.pnlConfigOptions.Name = "pnlConfigOptions";
-            this.pnlConfigOptions.Size = new System.Drawing.Size(450, 367);
+            this.pnlConfigOptions.Size = new System.Drawing.Size(450, 469);
             this.pnlConfigOptions.TabIndex = 31;
+            // 
+            // cfgFornUsaNumero
+            // 
+            this.cfgFornUsaNumero.AutoSize = true;
+            this.cfgFornUsaNumero.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgFornUsaNumero.ForeColor = System.Drawing.Color.White;
+            this.cfgFornUsaNumero.Location = new System.Drawing.Point(10, 320);
+            this.cfgFornUsaNumero.Name = "cfgFornUsaNumero";
+            this.cfgFornUsaNumero.Size = new System.Drawing.Size(169, 29);
+            this.cfgFornUsaNumero.TabIndex = 46;
+            this.cfgFornUsaNumero.Text = "Usa campo número";
+            this.cfgFornUsaNumero.UseVisualStyleBackColor = true;
+            this.cfgFornUsaNumero.CheckStateChanged += new System.EventHandler(this.cfgFornUsaNumero_CheckStateChanged);
+            // 
+            // cfgCliUsaNumero
+            // 
+            this.cfgCliUsaNumero.AutoSize = true;
+            this.cfgCliUsaNumero.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgCliUsaNumero.ForeColor = System.Drawing.Color.White;
+            this.cfgCliUsaNumero.Location = new System.Drawing.Point(10, 208);
+            this.cfgCliUsaNumero.Name = "cfgCliUsaNumero";
+            this.cfgCliUsaNumero.Size = new System.Drawing.Size(169, 29);
+            this.cfgCliUsaNumero.TabIndex = 45;
+            this.cfgCliUsaNumero.Text = "Usa campo número";
+            this.cfgCliUsaNumero.UseVisualStyleBackColor = true;
+            this.cfgCliUsaNumero.CheckStateChanged += new System.EventHandler(this.cfgCliUsaNumero_CheckStateChanged);
+            // 
+            // cfgProdSubPadrao
+            // 
+            this.cfgProdSubPadrao.AutoSize = true;
+            this.cfgProdSubPadrao.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgProdSubPadrao.ForeColor = System.Drawing.Color.White;
+            this.cfgProdSubPadrao.Location = new System.Drawing.Point(10, 115);
+            this.cfgProdSubPadrao.Name = "cfgProdSubPadrao";
+            this.cfgProdSubPadrao.Size = new System.Drawing.Size(177, 29);
+            this.cfgProdSubPadrao.TabIndex = 44;
+            this.cfgProdSubPadrao.Text = "Subcategoria Padrão";
+            this.cfgProdSubPadrao.UseVisualStyleBackColor = true;
+            this.cfgProdSubPadrao.CheckStateChanged += new System.EventHandler(this.cfgProdSubPadrao_CheckStateChanged);
+            // 
+            // cfgProdBalanca
+            // 
+            this.cfgProdBalanca.AutoSize = true;
+            this.cfgProdBalanca.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgProdBalanca.ForeColor = System.Drawing.Color.White;
+            this.cfgProdBalanca.Location = new System.Drawing.Point(224, 95);
+            this.cfgProdBalanca.Name = "cfgProdBalanca";
+            this.cfgProdBalanca.Size = new System.Drawing.Size(117, 29);
+            this.cfgProdBalanca.TabIndex = 43;
+            this.cfgProdBalanca.Text = "Usa balança";
+            this.cfgProdBalanca.UseVisualStyleBackColor = true;
+            this.cfgProdBalanca.CheckStateChanged += new System.EventHandler(this.cfgProdBalanca_CheckStateChanged);
+            // 
+            // cfgAjustaCfop
+            // 
+            this.cfgAjustaCfop.AutoSize = true;
+            this.cfgAjustaCfop.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cfgAjustaCfop.ForeColor = System.Drawing.Color.White;
+            this.cfgAjustaCfop.Location = new System.Drawing.Point(224, 75);
+            this.cfgAjustaCfop.Name = "cfgAjustaCfop";
+            this.cfgAjustaCfop.Size = new System.Drawing.Size(198, 29);
+            this.cfgAjustaCfop.TabIndex = 42;
+            this.cfgAjustaCfop.Text = "Ajustar CFOP por CSOSN";
+            this.cfgAjustaCfop.UseVisualStyleBackColor = true;
+            this.cfgAjustaCfop.CheckStateChanged += new System.EventHandler(this.cfgAjustaCfop_CheckStateChanged);
             // 
             // cfgFornShowInat
             // 
             this.cfgFornShowInat.AutoSize = true;
             this.cfgFornShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cfgFornShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgFornShowInat.Location = new System.Drawing.Point(250, 252);
+            this.cfgFornShowInat.Location = new System.Drawing.Point(250, 300);
             this.cfgFornShowInat.Name = "cfgFornShowInat";
             this.cfgFornShowInat.Size = new System.Drawing.Size(140, 29);
             this.cfgFornShowInat.TabIndex = 41;
@@ -230,7 +308,7 @@
             this.cfgCliShowInat.AutoSize = true;
             this.cfgCliShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cfgCliShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgCliShowInat.Location = new System.Drawing.Point(250, 160);
+            this.cfgCliShowInat.Location = new System.Drawing.Point(250, 188);
             this.cfgCliShowInat.Name = "cfgCliShowInat";
             this.cfgCliShowInat.Size = new System.Drawing.Size(140, 29);
             this.cfgCliShowInat.TabIndex = 40;
@@ -243,7 +321,7 @@
             this.cfgProdShowInat.AutoSize = true;
             this.cfgProdShowInat.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cfgProdShowInat.ForeColor = System.Drawing.Color.White;
-            this.cfgProdShowInat.Location = new System.Drawing.Point(224, 75);
+            this.cfgProdShowInat.Location = new System.Drawing.Point(10, 95);
             this.cfgProdShowInat.Name = "cfgProdShowInat";
             this.cfgProdShowInat.Size = new System.Drawing.Size(140, 29);
             this.cfgProdShowInat.TabIndex = 39;
@@ -254,7 +332,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.White;
-            this.panel2.Location = new System.Drawing.Point(0, 214);
+            this.panel2.Location = new System.Drawing.Point(0, 262);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(450, 1);
             this.panel2.TabIndex = 38;
@@ -262,7 +340,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Location = new System.Drawing.Point(0, 124);
+            this.panel1.Location = new System.Drawing.Point(0, 152);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(450, 1);
             this.panel1.TabIndex = 37;
@@ -311,7 +389,7 @@
             this.cfgFornZeroEsquerda.AutoSize = true;
             this.cfgFornZeroEsquerda.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cfgFornZeroEsquerda.ForeColor = System.Drawing.Color.White;
-            this.cfgFornZeroEsquerda.Location = new System.Drawing.Point(10, 252);
+            this.cfgFornZeroEsquerda.Location = new System.Drawing.Point(10, 300);
             this.cfgFornZeroEsquerda.Name = "cfgFornZeroEsquerda";
             this.cfgFornZeroEsquerda.Size = new System.Drawing.Size(217, 29);
             this.cfgFornZeroEsquerda.TabIndex = 33;
@@ -324,7 +402,7 @@
             this.cfgCliZeroEsquerda.AutoSize = true;
             this.cfgCliZeroEsquerda.Font = new System.Drawing.Font("Poppins", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cfgCliZeroEsquerda.ForeColor = System.Drawing.Color.White;
-            this.cfgCliZeroEsquerda.Location = new System.Drawing.Point(10, 160);
+            this.cfgCliZeroEsquerda.Location = new System.Drawing.Point(10, 188);
             this.cfgCliZeroEsquerda.Name = "cfgCliZeroEsquerda";
             this.cfgCliZeroEsquerda.Size = new System.Drawing.Size(217, 29);
             this.cfgCliZeroEsquerda.TabIndex = 32;
@@ -337,7 +415,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Poppins", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(145, 226);
+            this.label5.Location = new System.Drawing.Point(153, 274);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(121, 28);
             this.label5.TabIndex = 31;
@@ -349,7 +427,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Poppins", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(164, 134);
+            this.label4.Location = new System.Drawing.Point(172, 162);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(76, 28);
             this.label4.TabIndex = 30;
@@ -386,7 +464,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(54)))), ((int)(((byte)(54)))), ((int)(((byte)(54)))));
-            this.ClientSize = new System.Drawing.Size(444, 494);
+            this.ClientSize = new System.Drawing.Size(444, 599);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cboSistema);
@@ -437,5 +515,10 @@
         private System.Windows.Forms.CheckBox cfgProdShowInat;
         private System.Windows.Forms.CheckBox cfgFornShowInat;
         private System.Windows.Forms.CheckBox cfgCliShowInat;
+        private System.Windows.Forms.CheckBox cfgAjustaCfop;
+        private System.Windows.Forms.CheckBox cfgProdBalanca;
+        private System.Windows.Forms.CheckBox cfgProdSubPadrao;
+        private System.Windows.Forms.CheckBox cfgCliUsaNumero;
+        private System.Windows.Forms.CheckBox cfgFornUsaNumero;
     }
 }

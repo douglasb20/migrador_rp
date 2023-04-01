@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MigradorRP
@@ -47,13 +41,18 @@ namespace MigradorRP
             cfgCalcMargem.Checked           = ConfigReader.GetConfigValue("Produtos", "calcular_margem") == "true";
             cfgAjustaPis.Checked            = ConfigReader.GetConfigValue("Produtos", "ajusta_pis_csosn") == "true";
             cfgAjustaCofins.Checked         = ConfigReader.GetConfigValue("Produtos", "ajusta_cofins_csosn") == "true";
+            cfgAjustaCfop.Checked           = ConfigReader.GetConfigValue("Produtos", "ajusta_cfop_csosn") == "true";
             cfgProdShowInat.Checked         = ConfigReader.GetConfigValue("Produtos", "mostra_inativos") == "true";
+            cfgProdBalanca.Checked          = ConfigReader.GetConfigValue("Produtos", "importa_balanca") == "true";
+            cfgProdSubPadrao.Checked        = ConfigReader.GetConfigValue("Produtos", "subcategoria_padrao") == "true";
 
             cfgCliZeroEsquerda.Checked      = ConfigReader.GetConfigValue("Clientes", "cli_remover_zeros_esquerda") == "true";
             cfgCliShowInat.Checked          = ConfigReader.GetConfigValue("Clientes", "mostra_inativos") == "true";
+            cfgCliUsaNumero.Checked         = ConfigReader.GetConfigValue("Clientes", "usa_campo_num") == "true";
 
             cfgFornZeroEsquerda.Checked     = ConfigReader.GetConfigValue("Fornecedores", "forn_remover_zeros_esquerda") == "true";
             cfgFornShowInat.Checked         = ConfigReader.GetConfigValue("Fornecedores", "mostra_inativos") == "true";
+            cfgFornUsaNumero.Checked         = ConfigReader.GetConfigValue("Fornecedores", "usa_campo_num") == "true";
 
             if (ConfigReader.tipoImportacao == null)
             {
@@ -107,6 +106,8 @@ namespace MigradorRP
             ConfigReader.SaveConfig();
             ConfigReader.sistema = cboSistema.SelectedItem.ToString();
             ConfigReader.tipoImportacao = cboEntrada.SelectedItem.ToString();
+
+            pai.Reload();
 
             this.Dispose();
         }
@@ -231,6 +232,46 @@ namespace MigradorRP
         {
             CheckBox chk = (CheckBox)sender;
             changeConfig(chk, "Fornecedores", "mostra_inativos");
+        }
+
+        private void cfgAjustaCfop_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "ajusta_cfop_csosn");
+        }
+
+        private void lblTopBar_MouseMove(object sender, MouseEventArgs e)
+        {
+            Funcoes.moverForm(this);
+        }
+
+        private void lblTopBar_MouseDown(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.SizeAll;
+        }
+
+        private void cfgProdBalanca_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "importa_balanca");
+        }
+
+        private void cfgProdSubPadrao_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Produtos", "subcategoria_padrao");
+        }
+
+        private void cfgCliUsaNumero_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Clientes", "usa_campo_num");
+        }
+
+        private void cfgFornUsaNumero_CheckStateChanged(object sender, EventArgs e)
+        {
+            CheckBox chk = (CheckBox)sender;
+            changeConfig(chk, "Fornecedores", "usa_campo_num");
         }
     }
 }

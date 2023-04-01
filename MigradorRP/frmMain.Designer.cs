@@ -181,7 +181,7 @@
             this.btnFileFornecedor.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(80)))), ((int)(((byte)(110)))));
             this.btnFileFornecedor.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(110)))), ((int)(((byte)(155)))));
             this.btnFileFornecedor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnFileFornecedor.Font = new System.Drawing.Font("Poppins", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFileFornecedor.Font = new System.Drawing.Font("Poppins", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnFileFornecedor.ForeColor = System.Drawing.Color.White;
             this.btnFileFornecedor.IconChar = FontAwesome.Sharp.IconChar.FileArrowUp;
             this.btnFileFornecedor.IconColor = System.Drawing.Color.White;
@@ -310,7 +310,7 @@
             this.dtGridFornecedores.DefaultCellStyle = dataGridViewCellStyle1;
             this.dtGridFornecedores.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dtGridFornecedores.GridColor = System.Drawing.SystemColors.ActiveCaption;
-            this.dtGridFornecedores.Location = new System.Drawing.Point(554, 71);
+            this.dtGridFornecedores.Location = new System.Drawing.Point(554, 120);
             this.dtGridFornecedores.MultiSelect = false;
             this.dtGridFornecedores.Name = "dtGridFornecedores";
             this.dtGridFornecedores.ReadOnly = true;
@@ -340,7 +340,7 @@
             this.dtGridClientes.DefaultCellStyle = dataGridViewCellStyle2;
             this.dtGridClientes.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dtGridClientes.GridColor = System.Drawing.SystemColors.ActiveCaption;
-            this.dtGridClientes.Location = new System.Drawing.Point(279, 71);
+            this.dtGridClientes.Location = new System.Drawing.Point(279, 120);
             this.dtGridClientes.MultiSelect = false;
             this.dtGridClientes.Name = "dtGridClientes";
             this.dtGridClientes.ReadOnly = true;
@@ -370,7 +370,7 @@
             this.dtGridProdutos.DefaultCellStyle = dataGridViewCellStyle3;
             this.dtGridProdutos.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dtGridProdutos.GridColor = System.Drawing.SystemColors.ActiveCaption;
-            this.dtGridProdutos.Location = new System.Drawing.Point(0, 71);
+            this.dtGridProdutos.Location = new System.Drawing.Point(0, 120);
             this.dtGridProdutos.MultiSelect = false;
             this.dtGridProdutos.Name = "dtGridProdutos";
             this.dtGridProdutos.ReadOnly = true;
@@ -411,25 +411,25 @@
             this.btnSetSystem.IconColor = System.Drawing.Color.Black;
             this.btnSetSystem.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnSetSystem.IconSize = 28;
-            this.btnSetSystem.ImageAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnSetSystem.ImageAlign = System.Drawing.ContentAlignment.BottomRight;
             this.btnSetSystem.Location = new System.Drawing.Point(935, 50);
             this.btnSetSystem.Name = "btnSetSystem";
             this.btnSetSystem.Size = new System.Drawing.Size(40, 40);
             this.btnSetSystem.TabIndex = 22;
-            this.btnSetSystem.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.btnSetSystem.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btnSetSystem.UseVisualStyleBackColor = false;
             this.btnSetSystem.Click += new System.EventHandler(this.btnSetSystem_Click);
             // 
             // lblAviso
             // 
-            this.lblAviso.AutoSize = true;
             this.lblAviso.Font = new System.Drawing.Font("Poppins", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblAviso.ForeColor = System.Drawing.Color.White;
-            this.lblAviso.Location = new System.Drawing.Point(300, 150);
+            this.lblAviso.Location = new System.Drawing.Point(0, 150);
             this.lblAviso.Name = "lblAviso";
-            this.lblAviso.Size = new System.Drawing.Size(74, 39);
+            this.lblAviso.Size = new System.Drawing.Size(975, 39);
             this.lblAviso.TabIndex = 29;
             this.lblAviso.Text = "Aviso";
+            this.lblAviso.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btnImport
             // 
@@ -481,7 +481,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dtGridClientes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtGridProdutos)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

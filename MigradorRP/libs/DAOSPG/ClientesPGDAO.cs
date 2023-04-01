@@ -11,5 +11,19 @@ namespace MigradorRP.libs
         public ClientesPGDAO (){
             this.tabela = "clientes";
         }
+
+        public void LimpaTudoAntes()
+        {
+            try
+            {
+                string query = "delete from clientes";
+
+                this.ExecuteNonQuery(query);
+            }
+            catch(Exception err)
+            {
+                throw err;
+            }
+        }
     }
 }

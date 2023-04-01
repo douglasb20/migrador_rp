@@ -1,5 +1,7 @@
 ﻿using FontAwesome.Sharp;
 using MigradorRP.libs;
+using MigradorRP.libs.DAOSPG;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -59,16 +61,12 @@ namespace MigradorRP
             this.Region = new Region(forma);
         }
 
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
                 ConfigReader.LoadConfig(pathConfig);
+                ConnectionPG.Connect();
                 string textFilter = "Arquivos Excel | *.xls; *.xlsx";
                 string titleDialog = "Selecione uma planilha para importar no sistema";
 
@@ -122,10 +120,9 @@ namespace MigradorRP
             }
         }
 
-        public void moverForm()
+        public void Reload()
         {
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
+            ConnectionPG.ReConnect();
         }
 
         private void lblClose_Click(object sender, EventArgs e)
@@ -150,7 +147,7 @@ namespace MigradorRP
 
         private void lblTopBar_MouseMove(object sender, MouseEventArgs e)
         {
-            moverForm();
+            Funcoes.moverForm(this);
         }
 
         private void BtnFileProd_Click(object sender, EventArgs e)
@@ -238,17 +235,23 @@ namespace MigradorRP
                 dtGridFornecedores.DataSource = null;
                 pnlDadosImp.Hide();
                 btnImport.Hide();
+                lblAviso.Hide();
 
+                this.Height = 250;
 
                 DesignAndActions.DesactiveTabs();
 
-
-                this.Height = 250;
 
             }
             catch(Exception error) {
                 Funcoes.ErrorMessage(error.Message);
             }
+        }
+
+        public void AjeitaTela()
+        {
+            this.Height = 250;
+            pnlDadosImp.Hide();
         }
 
         private async void btnValidateFiles_Click(object sender, EventArgs e)
@@ -297,13 +300,13 @@ namespace MigradorRP
         private void btnSetSystem_Click(object sender, EventArgs e)
         {
             frmConfigImportacao frmConfig = new frmConfigImportacao(this);
-            frmConfig.ShowInTaskbar= false;
+            frmConfig.ShowInTaskbar = false;
             frmConfig.ShowDialog();
         }
 
         private void lblTopBar_MouseDown(object sender, MouseEventArgs e)
         {
-            Cursor.Current= Cursors.SizeAll;
+            Cursor.Current = Cursors.SizeAll;
         }
 
         private async Task ValidaPlanilhas()
@@ -338,6 +341,7 @@ namespace MigradorRP
                     firstTab    = lblTabProd;
                     gridLoad    = dtGridProdutos;
                 }
+
                 if(!string.IsNullOrEmpty(fileDialogClient.FileName))
                 {
                     await CarregaTabelaClientes();
@@ -348,6 +352,7 @@ namespace MigradorRP
                         gridLoad = dtGridClientes;
                     }
                 }
+
                 if (!string.IsNullOrEmpty(fileDialogForn.FileName))
                 {
                     await CarregaTabelaFornecedores();
@@ -521,18 +526,71 @@ namespace MigradorRP
 
         private async void btnImport_Click(object sender, EventArgs e)
         {
-            await ImportaProdutos();
+            try
+            {
+                if(Funcoes.ChamaAlerta("Deseja começar a fazer a importação?", "question") == DialogResult.Yes)
+                {
+                    AjeitaTela();
+                    lblAviso.Show();
+
+                    if (!string.IsNullOrEmpty(fileDialogProd.FileName))
+                    {
+                        lblAviso.Text = "Importando Produtos, aguarde...";
+                        await ImportaProdutos();
+                    }
+                    if (!string.IsNullOrEmpty(fileDialogClient.FileName))
+                    {
+                        lblAviso.Text = "Importando Clientes, aguarde...";
+                        await ImportaClientes();
+                    }
+                    if (!string.IsNullOrEmpty(fileDialogForn.FileName))
+                    {
+                        lblAviso.Text = "Importando Fornecedores, aguarde...";
+                        await ImportaFornecedores();
+                    }
+
+                    lblAviso.Text = "Importação realizada com sucesso.";
+                }
+
+            }catch(NpgsqlException err)
+            {
+                Funcoes.ErrorMessage(err.Message);
+            }
+            catch(Exception err)
+            {
+                Funcoes.ErrorMessage(err.Message);
+            }
         }
 
         private async Task ImportaProdutos()
         {
             try
             {
-                List<Dictionary<string, string>> produtos =  UteisImportacao.PreparaProdutos(Tabelas.Tables["produtos"].Rows);
-                MessageBox.Show(string.Join(",", produtos[0]));
+                await UteisImportacao.PreparaProdutos(Tabelas.Tables["produtos"].Rows);
             }catch(Exception err)
             {
-                Funcoes.ErrorMessage(err.Message); 
+                throw err; 
+            }
+        }
+
+        private async Task ImportaClientes()
+        {
+            try
+            {
+                await UteisImportacao.PreparaClientes(Tabelas.Tables["clientes"].Rows);
+            }catch(Exception err)
+            {
+                throw err; 
+            }
+        }
+        private async Task ImportaFornecedores()
+        {
+            try
+            {
+                await UteisImportacao.PreparaFornecedores(Tabelas.Tables["fornecedores"].Rows);
+            }catch(Exception err)
+            {
+                throw err; 
             }
         }
     }

@@ -44,8 +44,8 @@ namespace MigradorRP
             DesactiveTabs();
             lblActivated        = sender;
             tmr.Enabled         = true;
+            dt.Location         = new Point(0, 90);
             dt.Size             = new Size(frm.Width, frm.Controls["pnlDadosImp"].Height - dt.Location.Y );
-            dt.Location         = new Point(0, dt.Top);
             lblTarget.BackColor = Color.FromArgb(255, 192, 128);
             lblTarget.ForeColor = Color.Black;
 

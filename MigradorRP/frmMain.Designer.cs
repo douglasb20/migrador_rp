@@ -69,7 +69,7 @@
             this.lblTopBar.BackColor = System.Drawing.Color.Transparent;
             this.lblTopBar.Font = new System.Drawing.Font("Poppins Medium", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTopBar.ForeColor = System.Drawing.Color.White;
-            this.lblTopBar.Location = new System.Drawing.Point(0, 0);
+            this.lblTopBar.Location = new System.Drawing.Point(0, 5);
             this.lblTopBar.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.lblTopBar.Name = "lblTopBar";
             this.lblTopBar.Padding = new System.Windows.Forms.Padding(10, 0, 0, 0);

@@ -66,7 +66,7 @@ namespace MigradorRP
             try
             {
                 ConfigReader.LoadConfig(pathConfig);
-                ConnectionPG.Connect();
+                //ConnectionPG.Connect();
                 string textFilter = "Arquivos Excel | *.xls; *.xlsx";
                 string titleDialog = "Selecione uma planilha para importar no sistema";
 
@@ -120,9 +120,16 @@ namespace MigradorRP
             }
         }
 
-        public void Reload()
+        public void Reload(bool firstAction)
         {
-            ConnectionPG.ReConnect();
+            if(firstAction)
+            {
+                ConnectionPG.Connect();
+            }
+            else
+            {
+                ConnectionPG.ReConnect();
+            }
         }
 
         private void lblClose_Click(object sender, EventArgs e)

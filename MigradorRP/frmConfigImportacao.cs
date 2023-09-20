@@ -107,7 +107,7 @@ namespace MigradorRP
             ConfigReader.sistema = cboSistema.SelectedItem.ToString();
             ConfigReader.tipoImportacao = cboEntrada.SelectedItem.ToString();
 
-            pai.Reload();
+            pai.Reload(canCloseApp);
 
             this.Dispose();
         }
